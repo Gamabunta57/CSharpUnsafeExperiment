@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Runtime.InteropServices;
 
 namespace UnsafeTest
 {
-    public struct UnsafeInteger
+    public unsafe struct UnsafeInteger
     {
-        unsafe private int* array;
+        public UnsafeInteger(int size) => array = (int*)Marshal.AllocHGlobal(size * sizeof(int)).ToPointer();
 
-        unsafe public UnsafeInteger(int size) => array = (int*)Marshal.AllocHGlobal(size * sizeof(int)).ToPointer();
+        public ComponentInt getValue(int index) => new ComponentInt(array + index);
 
-        public ComponentInt getComponent() => new ComponentInt();
-        unsafe public void updateComponent(ref ComponentInt component, int index) => component.val = (array + index);
-
-        unsafe public ComponentInt getValue(int index) => new ComponentInt(array + index);
-
-        unsafe public void setValue(int index, int val) => new ComponentInt(array + index);
+        private int* array;
     }
 }
