@@ -1,12 +1,17 @@
-﻿using ECSUnsafeTest.core;
+﻿using ECSUnsafeTest.Attributes;
+using ECSUnsafeTest.core;
 
 namespace ECSUnsafeTest.Component
 {
+    [AllocateMemory(0xFFFF)]
     public struct Heading
     {
-        //public Vector2 value;
-
-        public float X;
-        public float Y;
+        public Vector2 value;
+        public Vector2 value2;
+        public Vector2 value3;
+        public Vector2 value4;
+        public Vector2 value5;
+        public Vector2 value6;
+        public Vector2 value7;
     }
 }

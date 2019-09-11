@@ -2,6 +2,7 @@
 using ECSUnsafeTest.Component;
 using ECSUnsafeTest.core;
 using ECSUnsafeTest.MemoryAllocators;
+using System;
 
 namespace ECSUnsafeTest
 {
@@ -9,71 +10,43 @@ namespace ECSUnsafeTest
     {
         static void Main(string[] args)
         {
-            var allocator = new MemoryAllocator();
+            var memoryBuilder = new MemoryBuilder();
+            var memory = memoryBuilder.AutoSetData();
 
-            ref var position1 = ref allocator.New<Heading>();
-            ref var position2 = ref allocator.New<Heading>();
-            ref var heading1 = ref allocator.New<Position>();
-            ref var heading2 = ref allocator.New<Position>();
+            using (memory)
+            {
+                var i = 0;
+                for (; i < 1000; i++)
+                {
+                    memory.New<Position>();
+                    memory.New<Heading>();
+                }
+                ref var position = ref memory.New<Position>();
+                ref var heading = ref memory.New<Heading>();
 
-            position1.X = 0;
-            position1.Y = 0;
+                position.value = new Vector2 { X = 1, Y = 10 };
+                heading.value = new Vector2 { X = 1, Y = 0 };
 
-            position2.X = 1;
-            position2.Y = 1;
+                Console.WriteLine(string.Format("Position before: ({0},{1})", position.value.X, position.value.Y));
+                Console.WriteLine(string.Format("Heading before: ({0},{1})", heading.value.X, heading.value.Y));
 
-            heading1.value.X = 2;
-            heading1.value.Y = 2;
+                ref var position2 = ref memory.Get<Position>((ushort)(i));
+                ref var heading2 = ref memory.Get<Heading>((ushort)(i));
 
-            heading2.value.X = 3;
-            heading2.value.Y = 3;
+                position2.value = new Vector2 { X = 2, Y = 20 };
+                heading2.value = new Vector2 { X = 3, Y = 30 };
 
-            System.Console.WriteLine($"Position 1X: {position1.X}");
-            System.Console.WriteLine($"Position 1Y: {position1.Y}");
-            System.Console.WriteLine($"Position 2X: {position2.X}");
-            System.Console.WriteLine($"Position 2Y: {position2.Y}");
+                Console.WriteLine(string.Format("Position before: ({0},{1})", position2.value.X, position2.value.Y));
+                Console.WriteLine(string.Format("Heading before: ({0},{1})", heading2.value.X, heading2.value.Y));
 
-            System.Console.WriteLine($"Heading 1X: {heading1.value.X}");
-            System.Console.WriteLine($"Heading 1Y: {heading1.value.Y}");
-            System.Console.WriteLine($"Heading 2X: {heading2.value.X}");
-            System.Console.WriteLine($"Heading 2Y: {heading2.value.Y}");
+                Console.WriteLine(string.Format("Position before: ({0},{1})", position.value.X, position.value.Y));
+                Console.WriteLine(string.Format("Heading before: ({0},{1})", heading.value.X, heading.value.Y));
 
-            ref var position3 = ref allocator.Get<Vector2>(0);
-            ref var position4 = ref allocator.Get<Vector2>(1);
-            ref var heading3 = ref allocator.Get<Vector2>(2);
-            ref var heading4 = ref allocator.Get<Vector2>(3);
+                Console.ReadKey();
+            }
+            Console.WriteLine("Memory freed");
 
-            position3.X = 4;
-            position3.Y = 4;
-
-            position4.X = 5;
-            position4.Y = 5;
-
-            heading3.X = 6;
-            heading3.Y = 6;
-
-            heading4.X = 7;
-            heading4.Y = 7;
-
-            System.Console.WriteLine($"Position 3X: {position3.X}");
-            System.Console.WriteLine($"Position 3Y: {position3.Y}");
-            System.Console.WriteLine($"Position 4X: {position4.X}");
-            System.Console.WriteLine($"Position 4Y: {position4.Y}");
-
-            System.Console.WriteLine($"Heading 3X: {heading3.X}");
-            System.Console.WriteLine($"Heading 3Y: {heading3.Y}");
-            System.Console.WriteLine($"Heading 4X: {heading4.X}");
-            System.Console.WriteLine($"Heading 4Y: {heading4.Y}");
-
-            System.Console.WriteLine($"Position 1X: {position1.X}");
-            System.Console.WriteLine($"Position 1Y: {position1.Y}");
-            System.Console.WriteLine($"Position 2X: {position2.X}");
-            System.Console.WriteLine($"Position 2Y: {position2.Y}");
-
-            System.Console.WriteLine($"Heading 1X: {heading1.value.X}");
-            System.Console.WriteLine($"Heading 1Y: {heading1.value.Y}");
-            System.Console.WriteLine($"Heading 2X: {heading2.value.X}");
-            System.Console.WriteLine($"Heading 2Y: {heading2.value.Y}");
+            Console.ReadKey();
         }
     }
 }
