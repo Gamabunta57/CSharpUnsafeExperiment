@@ -1,6 +1,4 @@
-﻿using ECSUnsafeTest.Attributes;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Runtime.InteropServices;
 
 namespace ECSUnsafeTest.MemoryAllocators
@@ -9,34 +7,34 @@ namespace ECSUnsafeTest.MemoryAllocators
     {
         public byte* OriginAddress { get; }
 
-        /**
-         * Allocating "a lot" of memory to see if the release from a raw pointer is efficient or not.
-         * The test concludes that <yes> even from a simple pointer all the needed memory is freed :D
-         */
-        public MasterMemoryAllocator(uint size) => OriginAddress = (byte*)Marshal.AllocHGlobal((int)size).ToPointer();
-        public void Dispose() => Marshal.FreeHGlobal((IntPtr)OriginAddress);
-
-        public void SetMemoryTypes(Dictionary<Type, AllocateMemory> types)
+        public MasterMemoryAllocator(uint size, uint alignment)
         {
-            memorySlots = types;
-            foreach (var kvPair in memorySlots)
-                kvPair.Value.SetAddress(OriginAddress + kvPair.Value.Offset);
+            OriginAddress = (byte*)Marshal.AllocHGlobal((int)size).ToPointer();
+            Alignment = alignment;
+            StackPointer = 0;
+            currentIndex = 0;
         }
 
-        public ref T Get<T>(ushort index) where T : unmanaged
+        public void Dispose() => Marshal.FreeHGlobal((IntPtr)OriginAddress);
+
+        public ref T Get<T>(int index) where T : unmanaged => ref *(T*)(OriginAddress + index * Alignment);
+
+        public void* Get(int index, Type type)
         {
-            memorySlots.TryGetValue(typeof(T), out var value);
-            return ref *(T*)(OriginAddress + value.Offset + index * value.Alignement);
+            Convert.ChangeType(OriginAddress + index, type);
+            return OriginAddress + index * Alignment;
         }
 
         public ref T New<T>() where T : unmanaged
         {
-            memorySlots.TryGetValue(typeof(T), out var value);
-            var currentPointer = value.StackPointer;
-            value.StackPointer += value.Alignement;
+            var currentPointer = StackPointer;
+            StackPointer += Alignment;
+            *(int*)(OriginAddress + currentPointer) = currentIndex++; //Set the ID property of the entity
             return ref *(T*)(OriginAddress + currentPointer);
         }
 
-        private Dictionary<Type, AllocateMemory> memorySlots;
+        readonly uint Alignment;
+        uint StackPointer;
+        int currentIndex;
     }
 }
