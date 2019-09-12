@@ -1,4 +1,5 @@
-﻿using ECSUnsafeTest.MemoryAllocators;
+﻿using ECSUnsafeTest.Entities;
+using ECSUnsafeTest.MemoryAllocators;
 using ECSUnsafeTest.Scenes;
 using System;
 
@@ -12,6 +13,8 @@ namespace ECSUnsafeTest
 
             using (var memory = memoryBuilder.AutoSetData())
             {
+                var player_test = memory.NewEntity<PlayerEntity>();
+
                 var scene = new Scene(memory);
                 scene.Load();
 

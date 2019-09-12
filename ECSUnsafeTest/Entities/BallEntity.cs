@@ -4,10 +4,10 @@ namespace ECSUnsafeTest.Entities
 {
     unsafe public struct BallEntity : IEntity
     {
-        public BaseEntity BaseEntity { get => *baseEntity; set => *baseEntity = value; }
-        public Position Position { get => *position; set => *position = value; }
-        public Heading Heading { get => *heading; set => *heading = value; }
-        public RectCollider Collider { get => *collider; set => *collider = value; }
+        public ref BaseEntity BaseEntity => ref *baseEntity;
+        public ref Position Position => ref *position;
+        public ref Heading Heading => ref *heading;
+        public ref RectCollider Collider => ref *collider;
 
         internal BaseEntity* baseEntity;
         internal Position* position;

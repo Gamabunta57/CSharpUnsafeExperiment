@@ -7,6 +7,6 @@ namespace ECSUnsafeTest.Systems.Subsystems
     {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Vector2 ApplyMovement(Vector2 position, Vector2 heading) => position + heading;
+        public static Vector2 ApplyMovement(ref Vector2 position, ref Vector2 heading) => position += heading;
     }
 }

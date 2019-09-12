@@ -37,6 +37,14 @@ namespace ECSUnsafeTest.MemoryAllocators
             return (T*)(OriginAddress + currentPointer);
         }
 
+        public byte* NewPointer()
+        {
+            var currentPointer = StackPointer;
+            StackPointer += Alignment;
+            *(int*)(OriginAddress + currentPointer) = currentIndex++; //Set the ID property of the entity
+            return OriginAddress + currentPointer;
+        }
+
         public PlayerEntity New()
         {
             var player = new PlayerEntity
@@ -48,6 +56,20 @@ namespace ECSUnsafeTest.MemoryAllocators
             };
 
             return player;
+        }
+
+        public T NewEntity<T>() where T : IEntity, new()
+        {
+            var entity = new T();
+
+            var members = typeof(T).GetFields(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            foreach(var member in members)
+            {
+                Console.WriteLine($"Member name: {member.Name}");
+                member.SetValue(entity, (IntPtr)NewPointer());
+            }
+
+            return entity;
         }
 
         readonly uint Alignment;

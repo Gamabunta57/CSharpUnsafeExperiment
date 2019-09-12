@@ -27,9 +27,7 @@ namespace ECSUnsafeTest.Systems
 
                 Console.WriteLine($"Player {player.BaseEntity.Id} before: {player.Position.Value}");
 
-                var position = player.Position;
-                position.Value = ApplyMovement(player.Position.Value ,  player.Heading.Value);
-                player.Position = position;
+                ApplyMovement(ref player.Position.Value , ref player.Heading.Value);
 
                 Console.WriteLine($"Player {player.BaseEntity.Id} after:  {player.Position.Value}");
             }
