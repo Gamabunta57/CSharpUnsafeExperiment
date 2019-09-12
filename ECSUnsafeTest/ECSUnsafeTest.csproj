@@ -20,10 +20,11 @@
     <Folder Include="Systems\" />
     <Folder Include="Scenes\" />
     <Folder Include="Systems\Subsystems\" />
+    <Folder Include="Component\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Entities\EntityBuilder.cs" />
-    <Compile Remove="Component\Heading.cs" />
-    <Compile Remove="Component\Position.cs" />
+    <Compile Remove="Systems\PhysicsSystem.cs" />
+    <Compile Remove="Systems\Subsystems\CollisionDetectionSubsystem.cs" />
   </ItemGroup>
 </Project>

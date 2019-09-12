@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using ECSUnsafeTest.Component;
+using ECSUnsafeTest.core;
 using ECSUnsafeTest.Entities;
 using ECSUnsafeTest.MemoryAllocators;
 using ECSUnsafeTest.Systems;
@@ -22,22 +24,22 @@ namespace ECSUnsafeTest.Scenes
 
         public void Load()
         {
-            ref var player = ref allocator.New<PlayerEntity>();
-            ref var player2 = ref allocator.New<PlayerEntity>();
+            var player = allocator.New();
+            var player2 = allocator.New();
 
-            player.heading = new core.Vector2 { X = 0, Y = 1 };
-            player.position = new core.Vector2 { X = 0, Y = 1 };
+            player.Heading = new Heading { Value = new Vector2 { X = 0, Y = 1 } };
+            player.Position = new Position { Value = new Vector2 { X = 10, Y = 1 } };
 
-            player2.heading = new core.Vector2 { X = 1, Y = 0 };
-            player2.position = new core.Vector2 { X = 10, Y = 1 };
+            player2.Heading = new Heading { Value = new Vector2 { X = 1, Y = 0 } };
+            player2.Position = new Position { Value = new Vector2 { X = 1, Y = 10 } };
 
-            Console.WriteLine($"P1 id: {player.baseEntity.Id}");
-            Console.WriteLine($"P2 id: {player2.baseEntity.Id}");
+            Console.WriteLine($"P1 id: {player.BaseEntity.Id}");
+            Console.WriteLine($"P2 id: {player2.BaseEntity.Id}");
 
             foreach (var system in systemList)
             {
-                system.OnRegisterEntity(player.baseEntity.Id);
-                system.OnRegisterEntity(player2.baseEntity.Id);
+                system.OnRegisterEntity(player);
+                system.OnRegisterEntity(player2);
             }
         }
 

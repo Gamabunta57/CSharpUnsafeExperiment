@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using ECSUnsafeTest.Component;
+using ECSUnsafeTest.Entities;
 
 namespace ECSUnsafeTest.MemoryAllocators
 {
@@ -19,18 +21,33 @@ namespace ECSUnsafeTest.MemoryAllocators
 
         public ref T Get<T>(int index) where T : unmanaged => ref *(T*)(OriginAddress + index * Alignment);
 
-        public void* Get(int index, Type type)
-        {
-            Convert.ChangeType(OriginAddress + index, type);
-            return OriginAddress + index * Alignment;
-        }
-
         public ref T New<T>() where T : unmanaged
         {
             var currentPointer = StackPointer;
             StackPointer += Alignment;
             *(int*)(OriginAddress + currentPointer) = currentIndex++; //Set the ID property of the entity
             return ref *(T*)(OriginAddress + currentPointer);
+        }
+
+        public T* NewPointer<T>() where T : unmanaged
+        {
+            var currentPointer = StackPointer;
+            StackPointer += Alignment;
+            *(int*)(OriginAddress + currentPointer) = currentIndex++; //Set the ID property of the entity
+            return (T*)(OriginAddress + currentPointer);
+        }
+
+        public PlayerEntity New()
+        {
+            var player = new PlayerEntity
+            {
+                baseEntity = NewPointer<BaseEntity>(),
+                heading = NewPointer<Heading>(),
+                position = NewPointer<Position>(),
+                collider = NewPointer<RectCollider>()
+            };
+
+            return player;
         }
 
         readonly uint Alignment;

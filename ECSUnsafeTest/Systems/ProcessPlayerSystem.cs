@@ -14,24 +14,28 @@ namespace ECSUnsafeTest.Systems
             memory = allocator;
         }
 
-        public void OnRegisterEntity(int Id)
+        public void OnRegisterEntity(IEntity entity)
         {
-            idList.Add(Id);
+            idList.Add(entity);
         }
 
         public void Update()
         {
-            foreach(var id in idList)
+            foreach(var entity in idList)
             {
-                ref var player = ref memory.Get<PlayerEntity>(id);
+                var player = (PlayerEntity) entity;
 
-                Console.WriteLine($"Player {player.baseEntity.Id} before: {player.position}");
-                ApplyMovement(ref player.position, ref player.heading);
-                Console.WriteLine($"Player {player.baseEntity.Id} after:  {player.position}");
+                Console.WriteLine($"Player {player.BaseEntity.Id} before: {player.Position.Value}");
+
+                var position = player.Position;
+                position.Value = ApplyMovement(player.Position.Value ,  player.Heading.Value);
+                player.Position = position;
+
+                Console.WriteLine($"Player {player.BaseEntity.Id} after:  {player.Position.Value}");
             }
         }
 
         readonly MasterMemoryAllocator memory;
-        readonly IList<int> idList = new List<int>();
+        readonly IList<IEntity> idList = new List<IEntity>();
     }
 }
