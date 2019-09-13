@@ -1,5 +1,5 @@
 ﻿using ECSUnsafeTest.MemoryManagement.Attributes;
-using ECSUnsafeTest.core;
+using ECSUnsafeTest.utils;
 
 namespace ECSUnsafeTest.ECS.Component
 {

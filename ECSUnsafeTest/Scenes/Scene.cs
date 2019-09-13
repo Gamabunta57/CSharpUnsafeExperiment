@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ECSUnsafeTest.ECS.Component;
-using ECSUnsafeTest.core;
+using ECSUnsafeTest.utils;
 using ECSUnsafeTest.Entities;
 using ECSUnsafeTest.MemoryManagement.MemoryAllocators;
 using ECSUnsafeTest.Systems;

@@ -8,7 +8,7 @@ namespace ECSUnsafeTest
     {
         static void Main(string[] args)
         {
-            using (var memory = MemoryBuilder.AutoSetData())
+            using (var memory = MemoryBuilder.BuildMemoryAllocator())
             {
                 var scene = new Scene(memory);
                 scene.Load();  

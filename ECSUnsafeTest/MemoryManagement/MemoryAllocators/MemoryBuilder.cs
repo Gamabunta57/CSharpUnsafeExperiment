@@ -6,7 +6,7 @@ namespace ECSUnsafeTest.MemoryManagement.MemoryAllocators
 {
     public static class MemoryBuilder
     {
-        public static MemoryAllocator AutoSetData()
+        public static MemoryAllocator BuildMemoryAllocator()
         {
             var asm = Assembly.GetExecutingAssembly();
             var entityCount = 0u;
