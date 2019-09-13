@@ -7,10 +7,9 @@ namespace ECSUnsafeTest
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            var memory = MemoryBuilder.BuildMemoryAllocator();
-            using (memory)
+            using (var memory = MemoryBuilder.BuildMemoryAllocator())
             {
                 EntityManager.Init(memory);
                 var scene = new Scene();
@@ -18,9 +17,11 @@ namespace ECSUnsafeTest
 
                 for (var i = 0; i < 10; i++)
                     scene.Update();
-            }
 
+                Console.ReadKey();
+            }
             Console.WriteLine("Memory freed");
+            Console.ReadKey();
         }
     }
 }

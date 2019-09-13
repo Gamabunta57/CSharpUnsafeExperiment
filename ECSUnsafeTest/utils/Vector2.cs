@@ -19,9 +19,6 @@
             return self;
         }
 
-        public override string ToString()
-        {
-            return $"{nameof(Vector2)}( x: {X}, y: {Y} )";
-        }
+        public override string ToString() => $"{nameof(Vector2)}( x: {X}, y: {Y} )";
     }
 }

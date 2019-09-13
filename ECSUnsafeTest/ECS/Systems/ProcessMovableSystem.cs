@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using ECSFoundation.ECS.Entities;
 using ECSFoundation.ECS.Systems;
+using ECSUnsafeTest.ECS.Component;
 
-namespace ECSUnsafeTest.Systems
+namespace ECSUnsafeTest.ECS.Systems
 {
+    public interface IMovable : IEntity
+    {
+        ref Position Position { get; }
+        ref Heading Heading { get; }
+    }
+
     public class ProcessMovableSystem : ISystem
     {
-    
-        public ProcessMovableSystem()
-        {
-            EntityManager.OnNewEntityCreated += OnNewEntityCreated;
-        }
+
+        public ProcessMovableSystem() => EntityManager.OnNewEntityCreated += OnNewEntityCreated;
 
         public void OnNewEntityCreated(IEntity entity)
         {
@@ -23,11 +27,11 @@ namespace ECSUnsafeTest.Systems
         {
             foreach(var entity in idList)
             {
-                Console.WriteLine($"Entity#{entity.BaseEntity.Id} before: {entity.Position.Value}, heading :{entity.Heading.Value}");
+                Console.Write($"Entity#{entity.BaseEntity.Id} Dir: {entity.Heading.Value}, Pos: {entity.Position.Value}");
 
                 entity.Position.Value += entity.Heading.Value;
 
-                Console.WriteLine($"Entity#{entity.BaseEntity.Id} after:  {entity.Position.Value}, heading :{entity.Heading.Value}");
+                Console.WriteLine($" => {entity.Position.Value}");
             }
         }
 
