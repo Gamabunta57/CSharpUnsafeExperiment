@@ -15,16 +15,20 @@
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="core\" />
-    <Folder Include="Entities\" />
-    <Folder Include="Systems\" />
+    <Folder Include="utils\" />
     <Folder Include="Scenes\" />
-    <Folder Include="Systems\Subsystems\" />
-    <Folder Include="Component\" />
+    <Folder Include="ECS\" />
+    <Folder Include="MemoryManagement\" />
+    <Folder Include="MemoryManagement\MemoryAllocators\" />
+    <Folder Include="MemoryManagement\Attributes\" />
+    <Folder Include="ECS\Component\" />
+    <Folder Include="ECS\Entities\" />
+    <Folder Include="ECS\Systems\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Entities\EntityBuilder.cs" />
     <Compile Remove="Systems\PhysicsSystem.cs" />
     <Compile Remove="Systems\Subsystems\CollisionDetectionSubsystem.cs" />
+    <Compile Remove="Systems\Subsystems\MovableSubsystem.cs" />
   </ItemGroup>
 </Project>

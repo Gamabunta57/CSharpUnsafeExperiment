@@ -1,12 +1,12 @@
-﻿using ECSUnsafeTest.Attributes;
+﻿using ECSUnsafeTest.MemoryManagement.Attributes;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace ECSUnsafeTest.MemoryAllocators
+namespace ECSUnsafeTest.MemoryManagement.MemoryAllocators
 {
-    class MemoryBuilder
+    public static class MemoryBuilder
     {
-        public MasterMemoryAllocator AutoSetData()
+        public static MemoryAllocator AutoSetData()
         {
             var asm = Assembly.GetExecutingAssembly();
             var entityCount = 0u;
@@ -26,7 +26,7 @@ namespace ECSUnsafeTest.MemoryAllocators
                 entityCount += aam.EntityCount;
             }
 
-            return new MasterMemoryAllocator(entityCount * maxAlignement, maxAlignement);
+            return new MemoryAllocator(entityCount * maxAlignement, maxAlignement);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ECSUnsafeTest.Attributes
+namespace ECSUnsafeTest.MemoryManagement.Attributes
 {
     [AttributeUsage(AttributeTargets.Struct, Inherited = false, AllowMultiple = false)]
     public class AllocateMemory : Attribute

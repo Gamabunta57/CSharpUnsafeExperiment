@@ -1,4 +1,4 @@
-﻿namespace ECSUnsafeTest.core
+﻿namespace ECSUnsafeTest.utils
 {
     public struct Vector2
     {

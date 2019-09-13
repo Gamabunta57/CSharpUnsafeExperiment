@@ -1,9 +1,9 @@
-﻿using ECSUnsafeTest.Attributes;
+﻿using ECSUnsafeTest.MemoryManagement.Attributes;
 using ECSUnsafeTest.core;
 
-namespace ECSUnsafeTest.Component
+namespace ECSUnsafeTest.ECS.Component
 {
-    [AllocateMemory(0x02)]
+    [AllocateMemory(0x03)]
     public struct RectCollider
     {
         public Vector2 center;
