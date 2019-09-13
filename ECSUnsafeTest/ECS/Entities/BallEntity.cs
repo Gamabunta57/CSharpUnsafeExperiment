@@ -2,7 +2,7 @@
 using ECSUnsafeTest.ECS.Component;
 using ECSUnsafeTest.ECS.Systems;
 
-namespace ECSUnsafeTest.Entities
+namespace ECSUnsafeTest.ECS.Entities
 {
     public unsafe struct BallEntity : IMovable, ICollidable
     {

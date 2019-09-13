@@ -27,11 +27,7 @@ namespace ECSUnsafeTest.ECS.Systems
         {
             foreach(var entity in idList)
             {
-                Console.Write($"Entity#{entity.BaseEntity.Id} Dir: {entity.Heading.Value}, Pos: {entity.Position.Value}");
-
                 entity.Position.Value += entity.Heading.Value;
-
-                Console.WriteLine($" => {entity.Position.Value}");
             }
         }
 

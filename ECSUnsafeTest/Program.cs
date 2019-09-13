@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using ECSFoundation.ECS.Entities;
 using ECSFoundation.MemoryManagement.MemoryAllocators;
 using ECSUnsafeTest.Scenes;
@@ -15,8 +16,11 @@ namespace ECSUnsafeTest
                 var scene = new Scene();
                 scene.Load();
 
-                for (var i = 0; i < 10; i++)
+                for (var i = 0; i < 100; i++)
+                {
                     scene.Update();
+                    Thread.Sleep(1000 / 60);
+                }
 
                 Console.ReadKey();
             }
