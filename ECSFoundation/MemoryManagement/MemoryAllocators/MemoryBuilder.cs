@@ -9,25 +9,26 @@ namespace ECSFoundation.MemoryManagement.MemoryAllocators
     {
         public static MemoryAllocator BuildMemoryAllocator()
         {
-            var asm = Assembly.GetCallingAssembly(); //TODO : get all assemblies, it miss BaseEntity in the computation
+            var asmList = AppDomain.CurrentDomain.GetAssemblies();
             var entityCount = 0u;
-            var types = asm.GetTypes();
             var maxAlignement = 0u;
 
-            for(var i = 0; i < types.Length; i++)
-            {
-                var aam = types[i].GetCustomAttribute<AllocateMemory>(false);
-                if (null == aam)
-                    continue;
+            foreach(var asm in asmList) {
+                var types = asm.GetTypes();
+                for (var i = 0u; i < types.Length; i++)
+                {
+                    var aam = types[i].GetCustomAttribute<AllocateMemory>(false);
+                    if (null == aam)
+                        continue;
 
-                var align = (uint)Marshal.SizeOf(types[i]);
-                if (align > maxAlignement)
-                    maxAlignement = align;
+                    var align = (uint)Marshal.SizeOf(types[i]);
+                    if (align > maxAlignement)
+                        maxAlignement = align;
 
-                entityCount += aam.EntityCount;
-                Console.WriteLine($"Size of type {types[i].Name}: {align} | Count: {entityCount}");
+                    entityCount += aam.EntityCount;
+                    Console.WriteLine($"Size of type {types[i].Name}: {align} | Count: {entityCount}");
+                }
             }
-
             return new MemoryAllocator(entityCount * maxAlignement, maxAlignement);
         }
     }

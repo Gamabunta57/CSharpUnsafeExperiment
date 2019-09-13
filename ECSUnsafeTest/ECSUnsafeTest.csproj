@@ -24,9 +24,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Entities\EntityBuilder.cs" />
-    <Compile Remove="Systems\PhysicsSystem.cs" />
-    <Compile Remove="Systems\Subsystems\CollisionDetectionSubsystem.cs" />
-    <Compile Remove="Systems\Subsystems\MovableSubsystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ECSFoundation\ECSFoundation.csproj" />

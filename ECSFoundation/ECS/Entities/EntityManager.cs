@@ -9,10 +9,7 @@ namespace ECSFoundation.ECS.Entities
         public delegate void NewEntityCreated(IEntity entity);
 
 
-        public static void Init(MemoryAllocator memoryManager)
-        {
-            memory = memoryManager;
-        }
+        public static void Init(MemoryAllocator memoryManager) => memory = memoryManager;
 
         public static T NewEntity<T>() where T : IEntity, new()
         {
