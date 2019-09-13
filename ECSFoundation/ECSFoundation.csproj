@@ -1,7 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
 
@@ -10,25 +9,16 @@
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType></DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="utils\" />
-    <Folder Include="Scenes\" />
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="ECS\" />
     <Folder Include="ECS\Component\" />
     <Folder Include="ECS\Entities\" />
     <Folder Include="ECS\Systems\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Entities\EntityBuilder.cs" />
-    <Compile Remove="Systems\PhysicsSystem.cs" />
-    <Compile Remove="Systems\Subsystems\CollisionDetectionSubsystem.cs" />
-    <Compile Remove="Systems\Subsystems\MovableSubsystem.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ECSFoundation\ECSFoundation.csproj" />
   </ItemGroup>
 </Project>

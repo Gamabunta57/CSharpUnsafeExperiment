@@ -1,4 +1,4 @@
-﻿namespace ECSUnsafeTest.Systems
+﻿namespace ECSFoundation.ECS.Systems
 {
     public interface ISystem
     {

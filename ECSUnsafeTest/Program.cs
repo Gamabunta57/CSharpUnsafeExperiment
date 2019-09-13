@@ -1,6 +1,7 @@
-﻿using ECSUnsafeTest.MemoryManagement.MemoryAllocators;
+﻿using System;
+using ECSFoundation.ECS.Entities;
+using ECSFoundation.MemoryManagement.MemoryAllocators;
 using ECSUnsafeTest.Scenes;
-using System;
 
 namespace ECSUnsafeTest
 {
@@ -8,19 +9,18 @@ namespace ECSUnsafeTest
     {
         static void Main(string[] args)
         {
-            using (var memory = MemoryBuilder.BuildMemoryAllocator())
+            var memory = MemoryBuilder.BuildMemoryAllocator();
+            using (memory)
             {
-                var scene = new Scene(memory);
-                scene.Load();  
+                EntityManager.Init(memory);
+                var scene = new Scene();
+                scene.Load();
 
-                for (var i = 0; i < 10;i++)
+                for (var i = 0; i < 10; i++)
                     scene.Update();
-
-                Console.ReadKey();
             }
 
             Console.WriteLine("Memory freed");
-            Console.ReadKey();
         }
     }
 }

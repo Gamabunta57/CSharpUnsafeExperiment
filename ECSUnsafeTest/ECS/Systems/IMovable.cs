@@ -1,5 +1,5 @@
-﻿using ECSUnsafeTest.ECS.Component;
-using ECSUnsafeTest.Entities;
+﻿using ECSFoundation.ECS.Entities;
+using ECSUnsafeTest.ECS.Component;
 
 namespace ECSUnsafeTest.Systems
 {

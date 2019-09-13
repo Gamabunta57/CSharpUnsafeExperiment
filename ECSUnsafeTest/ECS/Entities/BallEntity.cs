@@ -1,9 +1,10 @@
-﻿using ECSUnsafeTest.ECS.Component;
+﻿using ECSFoundation.ECS.Component;
+using ECSUnsafeTest.ECS.Component;
 using ECSUnsafeTest.Systems;
 
 namespace ECSUnsafeTest.Entities
 {
-    unsafe public struct BallEntity : IMovable
+    public unsafe struct BallEntity : IMovable
     {
         public ref BaseEntity BaseEntity => ref *baseEntity;
         public ref Position Position => ref *position;

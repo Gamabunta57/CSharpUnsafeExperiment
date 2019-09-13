@@ -1,6 +1,6 @@
-﻿using ECSUnsafeTest.ECS.Component;
+﻿using ECSFoundation.ECS.Component;
 
-namespace ECSUnsafeTest.Entities
+namespace ECSFoundation.ECS.Entities
 {
     public interface IEntity
     {

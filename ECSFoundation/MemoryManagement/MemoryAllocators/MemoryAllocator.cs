@@ -1,22 +1,34 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using ECSUnsafeTest.Entities;
+using ECSFoundation.ECS.Entities;
 
-namespace ECSUnsafeTest.MemoryManagement.MemoryAllocators
+namespace ECSFoundation.MemoryManagement.MemoryAllocators
 {
     public unsafe class MemoryAllocator : IDisposable
     {
-
+    
         public MemoryAllocator(uint size, uint alignment)
         {
-            OriginAddress = (byte*)Marshal.AllocHGlobal((int)size).ToPointer();
+            OriginAddress =(byte*)Marshal.AllocHGlobal((int)size);
+            Console.WriteLine((IntPtr)OriginAddress);
             Alignment = alignment;
             StackPointer = 0;
             currentIndex = 0;
-        }
+        } 
 
-        public void Dispose() => Marshal.FreeHGlobal((IntPtr)OriginAddress);
+        public void Dispose()
+        {
+            if (!isMemoryFreed) {
+                isMemoryFreed = true;
+                Marshal.FreeHGlobal((IntPtr)OriginAddress);
+            }
+            else
+            {
+                Console.WriteLine("Ask a second time");
+            }
+            Console.WriteLine("Ask for dispose");
+        }
 
         public T NewEntity<T>() where T : IEntity, new()
         {
@@ -31,9 +43,7 @@ namespace ECSUnsafeTest.MemoryManagement.MemoryAllocators
             return (T)boxed;
         }
 
-        public ref T Get<T>(int index) where T : unmanaged => ref *(T*)(OriginAddress + index * Alignment);
-
-        void* NewPointer()
+        byte* NewPointer()
         {
             var currentPointer = StackPointer;
             StackPointer += Alignment;
@@ -41,8 +51,9 @@ namespace ECSUnsafeTest.MemoryManagement.MemoryAllocators
         }
 
         readonly uint Alignment;
-        readonly byte* OriginAddress;
+        byte* OriginAddress;
         uint StackPointer;
         int currentIndex;
+        bool isMemoryFreed;
     }
 }

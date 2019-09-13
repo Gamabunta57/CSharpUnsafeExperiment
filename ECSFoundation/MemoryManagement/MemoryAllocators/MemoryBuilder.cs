@@ -1,14 +1,15 @@
-﻿using ECSUnsafeTest.MemoryManagement.Attributes;
+﻿using ECSFoundation.MemoryManagement.Attributes;
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace ECSUnsafeTest.MemoryManagement.MemoryAllocators
+namespace ECSFoundation.MemoryManagement.MemoryAllocators
 {
     public static class MemoryBuilder
     {
         public static MemoryAllocator BuildMemoryAllocator()
         {
-            var asm = Assembly.GetExecutingAssembly();
+            var asm = Assembly.GetCallingAssembly(); //TODO : get all assemblies, it miss BaseEntity in the computation
             var entityCount = 0u;
             var types = asm.GetTypes();
             var maxAlignement = 0u;
@@ -24,6 +25,7 @@ namespace ECSUnsafeTest.MemoryManagement.MemoryAllocators
                     maxAlignement = align;
 
                 entityCount += aam.EntityCount;
+                Console.WriteLine($"Size of type {types[i].Name}: {align} | Count: {entityCount}");
             }
 
             return new MemoryAllocator(entityCount * maxAlignement, maxAlignement);

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using ECSUnsafeTest.Entities;
-using ECSUnsafeTest.MemoryManagement.MemoryAllocators;
+using ECSFoundation.ECS.Entities;
+using ECSFoundation.ECS.Systems;
 
 namespace ECSUnsafeTest.Systems
 {
     public class ProcessMovableSystem : ISystem
     {
-
-        public ProcessMovableSystem(MemoryAllocator allocator){
-            memory = allocator;
+    
+        public ProcessMovableSystem()
+        {
+            EntityManager.OnNewEntityCreated += OnNewEntityCreated;
         }
 
-        public void OnRegisterEntity(IEntity entity)
+        public void OnNewEntityCreated(IEntity entity)
         {
             if(entity is IMovable movable)
                 idList.Add(movable);
@@ -22,15 +23,14 @@ namespace ECSUnsafeTest.Systems
         {
             foreach(var entity in idList)
             {
-                Console.WriteLine($"Entity#{entity.BaseEntity.Id} before: {entity.Position.Value}");
+                Console.WriteLine($"Entity#{entity.BaseEntity.Id} before: {entity.Position.Value}, heading :{entity.Heading.Value}");
 
                 entity.Position.Value += entity.Heading.Value;
 
-                Console.WriteLine($"Entity#{entity.BaseEntity.Id} after:  {entity.Position.Value}");
+                Console.WriteLine($"Entity#{entity.BaseEntity.Id} after:  {entity.Position.Value}, heading :{entity.Heading.Value}");
             }
         }
 
-        readonly MemoryAllocator memory;
         readonly IList<IMovable> idList = new List<IMovable>();
     }
 }

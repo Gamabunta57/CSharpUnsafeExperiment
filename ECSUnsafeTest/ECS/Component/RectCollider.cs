@@ -1,4 +1,4 @@
-﻿using ECSUnsafeTest.MemoryManagement.Attributes;
+﻿using ECSFoundation.MemoryManagement.Attributes;
 using ECSUnsafeTest.utils;
 
 namespace ECSUnsafeTest.ECS.Component
