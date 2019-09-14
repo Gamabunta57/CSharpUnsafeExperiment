@@ -24,115 +24,70 @@ namespace ECSUnsafeTest.ECS.Systems
     class PhysicSystem : ISystem
     {
 
-        public PhysicSystem() => EntityManager.OnNewEntityCreated += OnNewEntityCreated;
+        public PhysicSystem(uint layerCount)
+        {
+            collidableByLayer = new IList<ICollidable>[layerCount];
+            collisionMatrix = new IList<Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>>[layerCount];
+
+            for(var i = 0; i < layerCount; i++)
+            {
+                collidableByLayer[i] = new List<ICollidable>();
+                collisionMatrix[i] = new List<Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>>();
+            }
+        }
+
+        public void SetLayersAsCollidableTogether(CollisionLayer layerA, CollisionLayer layerB, Action<ICollidable, ICollidable, Vector2> callback)
+        {
+            var tuple = new Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>(layerB, callback);
+            collisionMatrix[(int)layerA].Add(tuple);
+        }
+        public void NotifyNewEntity(ICollidable entity) => collidableByLayer[(uint)entity.Collider.type].Add(entity);
 
         public void Update()
         {
-            for (var i = 0; i < entityList.Count - 1; i++)
+            for (var i = 0; i < collisionMatrix.Length; i++)
             {
-                var a = entityList[i];
-                for (var j = i + 1; j < entityList.Count; j++)
+                var collidingWithLayerA = collisionMatrix[i];
+                var entityListA = collidableByLayer[i];
+
+                for (var j = 0; j < collidingWithLayerA.Count; j++)
                 {
-                    var b = entityList[j];
-                    var fullExtent = a.Collider.halfExtent + b.Collider.halfExtent;
-                    ref var centerA = ref a.Collider.Center;
-                    var centerB = b.Position.Value + b.Collider.Center - a.Position.Value;
+                    var layerB = collidingWithLayerA[j].Item1;
+                    var entityListB = collidableByLayer[(uint)layerB];
 
-                    var isColliding = centerB.X < centerA.X + fullExtent.X
-                        && centerB.X > centerA.X - fullExtent.X
-                        && centerB.Y < centerA.Y + fullExtent.Y
-                        && centerB.Y > centerA.Y - fullExtent.Y;
+                    for (var k = 0; k < entityListA.Count; k++)
+                    {
+                        var a = entityListA[k];
+                        for (var l = 0; l <entityListB.Count; l++)
+                        {
+                            var b = entityListB[l];
+                            var fullExtent = a.Collider.halfExtent + b.Collider.halfExtent;
+                            ref var centerA = ref a.Collider.Center;
+                            var centerB = b.Position.Value + b.Collider.Center - a.Position.Value;
 
-                    if (!isColliding) continue;
+                            var isColliding = centerB.X < centerA.X + fullExtent.X
+                                && centerB.X > centerA.X - fullExtent.X
+                                && centerB.Y < centerA.Y + fullExtent.Y
+                                && centerB.Y > centerA.Y - fullExtent.Y;
 
-                    var penetration = new Vector2{
-                        X =  fullExtent.X - Math.Abs(centerB.X) - Math.Abs(centerA.X),
-                        Y = fullExtent.Y - Math.Abs(centerB.Y) - Math.Abs(centerA.Y)
-                    };
+                            if (!isColliding) continue;
 
-                    Console.WriteLine($"IsColliding #{a.BaseEntity.Id} | #{b.BaseEntity.Id}");
+                            Console.WriteLine($"IsColliding #{a.BaseEntity.Id} | #{b.BaseEntity.Id}");
 
-                    if (a.Collider.type == ColliderType.Player
-                        && b.Collider.type == ColliderType.Ball)
-                        OnPlayerAndBallCollide(a, b, penetration);
-                    else if (a.Collider.type == ColliderType.Ball
-                        && b.Collider.type == ColliderType.Player)
-                        OnPlayerAndBallCollide(b, a, penetration);
+                            var penetrationVector = new Vector2
+                            {
+                                X = fullExtent.X - Math.Abs(centerB.X) - Math.Abs(centerA.X),
+                                Y = fullExtent.Y - Math.Abs(centerB.Y) - Math.Abs(centerA.Y)
+                            };
 
-                    else if (a.Collider.type == ColliderType.Ball
-                        && b.Collider.type == ColliderType.GoalPlayer1
-                        || a.Collider.type == ColliderType.GoalPlayer1
-                        && b.Collider.type == ColliderType.Ball)
-                        OnBallReachGoalPlayer1();
-                    else if (a.Collider.type == ColliderType.Ball
-                        && b.Collider.type == ColliderType.GoalPlayer2
-                        || a.Collider.type == ColliderType.GoalPlayer2
-                        && b.Collider.type == ColliderType.Ball)
-                        OnBallReachGoalPlayer2();
-
-                    else if (a.Collider.type == ColliderType.Ball
-                        && b.Collider.type == ColliderType.Wall)
-                        OnBallTouchWall(a, b, penetration);
-                    else if (a.Collider.type == ColliderType.Wall
-                        && b.Collider.type == ColliderType.Ball)
-                        OnBallTouchWall(b, a, penetration);
-
-                    if (a.Collider.type == ColliderType.Player
-                        && b.Collider.type == ColliderType.Wall)
-                        OnPlayerHitsTheWall(a, b, penetration);
-                    else if (a.Collider.type == ColliderType.Wall
-                        && b.Collider.type == ColliderType.Player)
-                        OnPlayerHitsTheWall(b, a, penetration);
+                            collisionMatrix[i][j].Item2.Invoke(collidableByLayer[i][k], collidableByLayer[i][l], penetrationVector);
+                        }
+                    }
                 }
             }
         }
 
-        void OnNewEntityCreated(IEntity entity)
-        {
-            if (entity is ICollidable o)
-                entityList.Add(o);
-        }
-
-        void OnPlayerAndBallCollide(ICollidable player, ICollidable ball, Vector2 penetration)
-        {
-            Console.WriteLine($"Ball before pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
-            if (Math.Abs(penetration.X) <= Math.Abs(penetration.Y))
-            {
-                ball.Position.Value.X += player.Position.Value.X < ball.Position.Value.X ? penetration.X : -penetration.X;
-                ((IMovable)ball).Heading.Value.X *= -1;
-            }
-            else
-            {
-                ball.Position.Value.Y += penetration.Y;
-                ((IMovable)ball).Heading.Value.Y *= -1;
-            }
-            Console.WriteLine($"Ball after  pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
-        }
-
-        void OnBallReachGoalPlayer1()
-        {
-            Console.WriteLine("Player 1 win the match!!");
-            GameState.Player1Scored = true;
-        }
-        void OnBallReachGoalPlayer2()
-        {
-            Console.WriteLine("Player 2 win the match!!");
-            GameState.Player2Scored = true;
-        }
-
-        void OnBallTouchWall(ICollidable ball, ICollidable wall, Vector2 penetration)
-        {
-            Console.WriteLine($"Ball before pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
-           
-            ball.Position.Value.Y += ball.Position.Value.Y < wall.Position.Value.Y ? -penetration.Y : penetration.Y;
-            ((IMovable)ball).Heading.Value.Y *= -1;
-
-            Console.WriteLine($"Ball after  pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
-        }
-
-        void OnPlayerHitsTheWall(ICollidable player, ICollidable wall, Vector2 penetration) => 
-            player.Position.Value.Y += (penetration.Y < 0) ? -penetration.Y : penetration.Y;
-
-        readonly IList<ICollidable> entityList = new List<ICollidable>();
+        readonly IList<ICollidable>[] collidableByLayer;
+        readonly IList<Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>>[] collisionMatrix;
     }
 }

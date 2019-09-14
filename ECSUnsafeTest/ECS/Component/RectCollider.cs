@@ -8,10 +8,10 @@ namespace ECSUnsafeTest.ECS.Component
     {
         public Vector2 Center;
         public Vector2 halfExtent;
-        public ColliderType type;
+        public CollisionLayer type;
     }
 
-    public enum ColliderType
+    public enum CollisionLayer
     {
         Player,
         Ball,

@@ -28,6 +28,8 @@ namespace ECSUnsafeTest.ECS.Systems
             foreach(var entity in idList)
             {
                 entity.Position.Value += entity.Heading.Value;
+                if (entity.BaseEntity.Id == 2)
+                    Console.WriteLine($"Ball new pos: {entity.Position.Value}");
             }
         }
 
