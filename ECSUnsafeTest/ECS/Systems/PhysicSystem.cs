@@ -1,6 +1,7 @@
 ﻿using ECSFoundation.ECS.Entities;
 using ECSFoundation.ECS.Systems;
 using ECSUnsafeTest.ECS.Component;
+using ECSUnsafeTest.utils;
 using System;
 using System.Collections.Generic;
 
@@ -27,8 +28,8 @@ namespace ECSUnsafeTest.ECS.Systems
                 {
                     var b = entityList[j];
                     var fullExtent = a.Collider.halfExtent + b.Collider.halfExtent;
-                    var centerA = a.Position.Value + a.Collider.Center;
-                    var centerB = b.Position.Value + b.Collider.Center;
+                    ref var centerA = ref a.Collider.Center;
+                    var centerB = b.Position.Value + b.Collider.Center - a.Position.Value;
 
                     var isColliding = centerB.X < centerA.X + fullExtent.X
                         && centerB.X > centerA.X - fullExtent.X
@@ -37,14 +38,19 @@ namespace ECSUnsafeTest.ECS.Systems
 
                     if (!isColliding) continue;
 
+                    var penetration = new Vector2{
+                        X =  fullExtent.X - Math.Abs(centerB.X) - Math.Abs(centerA.X),
+                        Y = fullExtent.Y - Math.Abs(centerB.Y) - Math.Abs(centerA.Y)
+                    };
+
                     Console.WriteLine($"IsColliding #{a.BaseEntity.Id} | #{b.BaseEntity.Id}");
 
                     if (a.Collider.type == ColliderType.Player
                         && b.Collider.type == ColliderType.Ball)
-                        OnPlayerAndBallCollide(a, b);
+                        OnPlayerAndBallCollide(a, b, penetration);
                     else if (a.Collider.type == ColliderType.Ball
                         && b.Collider.type == ColliderType.Player)
-                        OnPlayerAndBallCollide(b, a);
+                        OnPlayerAndBallCollide(b, a, penetration);
 
                     else if (a.Collider.type == ColliderType.Ball
                         && b.Collider.type == ColliderType.Goal)
@@ -55,17 +61,17 @@ namespace ECSUnsafeTest.ECS.Systems
 
                     else if (a.Collider.type == ColliderType.Ball
                         && b.Collider.type == ColliderType.Wall)
-                        OnBallTouchWall(a, b);
+                        OnBallTouchWall(a, b, penetration);
                     else if (a.Collider.type == ColliderType.Wall
                         && b.Collider.type == ColliderType.Ball)
-                        OnBallTouchWall(b, a);
+                        OnBallTouchWall(b, a, penetration);
 
                     if (a.Collider.type == ColliderType.Player
                         && b.Collider.type == ColliderType.Wall)
-                        OnPlayerHitsTheWall(a, b);
+                        OnPlayerHitsTheWall(a, b, penetration);
                     else if (a.Collider.type == ColliderType.Wall
                         && b.Collider.type == ColliderType.Player)
-                        OnPlayerHitsTheWall(b, a);
+                        OnPlayerHitsTheWall(b, a, penetration);
                 }
             }
         }
@@ -76,24 +82,18 @@ namespace ECSUnsafeTest.ECS.Systems
                 entityList.Add(o);
         }
 
-        void OnPlayerAndBallCollide(ICollidable player, ICollidable ball)
+        void OnPlayerAndBallCollide(ICollidable player, ICollidable ball, Vector2 penetration)
         {
             Console.WriteLine($"Ball before pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
-            var penetration = (player.Collider.halfExtent + ball.Collider.halfExtent) * 2 - (ball.Position.Value + player.Position.Value); //TOTALLY WRONG => need sleep 
+            Console.WriteLine($"Penetration: {penetration}");
             if (Math.Abs(penetration.X) <= Math.Abs(penetration.Y))
             {
-                if (ball.Collider.Center.X > player.Collider.Center.X)
-                    ball.Position.Value.X += Math.Abs(penetration.X);
-                else
-                    ball.Position.Value.X -= Math.Abs(penetration.X);
+                ball.Position.Value.X += player.Position.Value.X < ball.Position.Value.X ? penetration.X : -penetration.X;
                 ((IMovable)ball).Heading.Value.X *= -1;
             }
             else
             {
-                if (ball.Collider.Center.Y > player.Collider.Center.Y)
-                    ball.Position.Value.Y += Math.Abs(penetration.Y);
-                else
-                    ball.Position.Value.Y -= Math.Abs(penetration.Y);
+                ball.Position.Value.Y += penetration.Y;
                 ((IMovable)ball).Heading.Value.Y *= -1;
             }
             Console.WriteLine($"Ball after  pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
@@ -104,32 +104,14 @@ namespace ECSUnsafeTest.ECS.Systems
             Console.WriteLine("Ball reach the goal!!");
         }
 
-        void OnBallTouchWall(ICollidable ball, ICollidable wall)
+        void OnBallTouchWall(ICollidable ball, ICollidable wall, Vector2 penetration)
         {
-            var penetrationY = (ball.Collider.halfExtent.Y + wall.Collider.halfExtent.Y) * 2 - (wall.Collider.Center.Y + ball.Collider.Center.Y);
-            if (penetrationY < 0)
-            {
-                ball.Position.Value.Y -= penetrationY;
-            }
-            else
-            {
-                ball.Position.Value.Y += penetrationY;
-            }
+            ball.Position.Value.Y += (penetration.Y < 0) ? -penetration.Y : penetration.Y;
             ((IMovable)ball).Heading.Value.Y *= -1;
         }
 
-        void OnPlayerHitsTheWall(ICollidable player, ICollidable wall)
-        {
-            var penetrationY = (player.Collider.halfExtent.Y + wall.Collider.halfExtent.Y) * 2 - (wall.Collider.Center.Y + player.Collider.Center.Y);
-            if (penetrationY < 0)
-            {
-                player.Position.Value.Y -= penetrationY;
-            }
-            else
-            {
-                player.Position.Value.Y += penetrationY;
-            }
-        }
+        void OnPlayerHitsTheWall(ICollidable player, ICollidable wall, Vector2 penetration) => 
+            player.Position.Value.Y += (penetration.Y < 0) ? -penetration.Y : penetration.Y;
 
         readonly IList<ICollidable> entityList = new List<ICollidable>();
     }
