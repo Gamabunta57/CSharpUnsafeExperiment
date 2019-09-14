@@ -85,7 +85,6 @@ namespace ECSUnsafeTest.ECS.Systems
         void OnPlayerAndBallCollide(ICollidable player, ICollidable ball, Vector2 penetration)
         {
             Console.WriteLine($"Ball before pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
-            Console.WriteLine($"Penetration: {penetration}");
             if (Math.Abs(penetration.X) <= Math.Abs(penetration.Y))
             {
                 ball.Position.Value.X += player.Position.Value.X < ball.Position.Value.X ? penetration.X : -penetration.X;
@@ -106,8 +105,12 @@ namespace ECSUnsafeTest.ECS.Systems
 
         void OnBallTouchWall(ICollidable ball, ICollidable wall, Vector2 penetration)
         {
-            ball.Position.Value.Y += (penetration.Y < 0) ? -penetration.Y : penetration.Y;
+            Console.WriteLine($"Ball before pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
+           
+            ball.Position.Value.Y += ball.Position.Value.Y < wall.Position.Value.Y ? -penetration.Y : penetration.Y;
             ((IMovable)ball).Heading.Value.Y *= -1;
+
+            Console.WriteLine($"Ball after  pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
         }
 
         void OnPlayerHitsTheWall(ICollidable player, ICollidable wall, Vector2 penetration) => 

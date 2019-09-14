@@ -39,7 +39,7 @@ namespace ECSUnsafeTest.Scenes
             player2.Collider.Center = new Vector2 { X = 0, Y = 0 };
             player2.Collider.type = ColliderType.Player;
 
-            ball.Heading.Value = new Vector2 { X = -1, Y = 0 };
+            ball.Heading.Value = new Vector2 { X = -1, Y = 1 };
             ball.Position.Value = new Vector2 { X = 20, Y = 10 };
             ball.Collider.halfExtent = new Vector2 { X = 2, Y = 2 };
             ball.Collider.Center = new Vector2 { X = 0, Y =0 };
