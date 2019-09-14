@@ -16,6 +16,7 @@ namespace ECSUnsafeTest.ECS.Component
         Player,
         Ball,
         Wall,
-        Goal
+        GoalPlayer1,
+        GoalPlayer2
     }
 }

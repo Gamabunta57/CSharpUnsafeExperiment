@@ -1,6 +1,7 @@
 ﻿using ECSFoundation.ECS.Entities;
 using ECSFoundation.ECS.Systems;
 using ECSUnsafeTest.ECS.Component;
+using ECSUnsafeTest.Global;
 using ECSUnsafeTest.utils;
 using System;
 using System.Collections.Generic;
@@ -53,11 +54,15 @@ namespace ECSUnsafeTest.ECS.Systems
                         OnPlayerAndBallCollide(b, a, penetration);
 
                     else if (a.Collider.type == ColliderType.Ball
-                        && b.Collider.type == ColliderType.Goal)
-                        OnBallReachGoal(a, b);
-                    else if (a.Collider.type == ColliderType.Goal
+                        && b.Collider.type == ColliderType.GoalPlayer1
+                        || a.Collider.type == ColliderType.GoalPlayer1
                         && b.Collider.type == ColliderType.Ball)
-                        OnBallReachGoal(b, a);
+                        OnBallReachGoalPlayer1();
+                    else if (a.Collider.type == ColliderType.Ball
+                        && b.Collider.type == ColliderType.GoalPlayer2
+                        || a.Collider.type == ColliderType.GoalPlayer2
+                        && b.Collider.type == ColliderType.Ball)
+                        OnBallReachGoalPlayer2();
 
                     else if (a.Collider.type == ColliderType.Ball
                         && b.Collider.type == ColliderType.Wall)
@@ -98,9 +103,15 @@ namespace ECSUnsafeTest.ECS.Systems
             Console.WriteLine($"Ball after  pos: {ball.Position.Value}, heading: {((IMovable)ball).Heading.Value}");
         }
 
-        void OnBallReachGoal(ICollidable ball, ICollidable goal)
+        void OnBallReachGoalPlayer1()
         {
-            Console.WriteLine("Ball reach the goal!!");
+            Console.WriteLine("Player 1 win the match!!");
+            GameState.Player1Scored = true;
+        }
+        void OnBallReachGoalPlayer2()
+        {
+            Console.WriteLine("Player 2 win the match!!");
+            GameState.Player2Scored = true;
         }
 
         void OnBallTouchWall(ICollidable ball, ICollidable wall, Vector2 penetration)
