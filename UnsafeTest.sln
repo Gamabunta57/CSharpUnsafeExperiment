@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECSUnsafeTest", "ECSUnsafeT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECSFoundation", "ECSFoundation\ECSFoundation.csproj", "{1983A56B-9844-4204-82A0-358D22950EBD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhysicsBoilerPlate", "PhysicsBoilerPlate\PhysicsBoilerPlate.csproj", "{232AE608-BFD6-4B93-9773-8C1DF7180B95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1983A56B-9844-4204-82A0-358D22950EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1983A56B-9844-4204-82A0-358D22950EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1983A56B-9844-4204-82A0-358D22950EBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{232AE608-BFD6-4B93-9773-8C1DF7180B95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{232AE608-BFD6-4B93-9773-8C1DF7180B95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{232AE608-BFD6-4B93-9773-8C1DF7180B95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{232AE608-BFD6-4B93-9773-8C1DF7180B95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
