@@ -1,7 +1,6 @@
 ﻿using ECSFoundation.ECS.Entities;
 using ECSFoundation.ECS.Systems;
 using ECSUnsafeTest.ECS.Component;
-using ECSUnsafeTest.Global;
 using ECSUnsafeTest.utils;
 using System;
 using System.Collections.Generic;
@@ -9,11 +8,8 @@ using System.Collections.Generic;
 namespace ECSUnsafeTest.ECS.Systems
 {
     /*TODO: 
-     * - migrate the code to have a better architecture
-     *      - this should check for the collisions only
-     *      - when it detects one, it should not process it by itself (event system ?)
      * - integrate more than one shape for the collision detection (circle + polygon?)
-     * - now it's AABB only => should add the possibility to rotate
+     * - now it's AABB only => should add the possibility to rotate => SAT ?
      */
     public interface ICollidable : IEntity
     {
