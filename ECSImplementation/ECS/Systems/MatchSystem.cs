@@ -1,16 +1,17 @@
 ﻿using ECSFoundation.ECS.Systems;
-using ECSUnsafeTest.Global;
-using ECSUnsafeTest.Scenes;
+using ECSImplementation.Global;
+using ECSImplementation.Scenes;
+using Microsoft.Xna.Framework;
 using System;
 
-namespace ECSUnsafeTest.ECS.Systems
+namespace ECSImplementation.ECS.Systems
 {
     class MatchSystem : ISystem
     {
         Scene _mainScene;
         public MatchSystem(Scene mainScene) => _mainScene = mainScene;
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             if (!GameState.Player1Scored && !GameState.Player2Scored)
                 return;
@@ -20,12 +21,12 @@ namespace ECSUnsafeTest.ECS.Systems
             if (GameState.Player1Scored)
             {
                 GameState.ScorePlayer1++;
-                if(GameState.ScorePlayer1 >= 10)
+                if (GameState.ScorePlayer1 >= 10)
                 {
                     Console.WriteLine($"Player 1 win the game {GameState.ScorePlayer1} - {GameState.ScorePlayer2}");
                     Reset();
                 }
-                    
+
             }
             else
             {
@@ -36,7 +37,7 @@ namespace ECSUnsafeTest.ECS.Systems
                     Reset();
                 }
             }
-                
+
             GameState.Player1Scored = false;
             GameState.Player2Scored = false;
 

@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECSUnsafeTest", "ECSUnsafeTest\ECSUnsafeTest.csproj", "{FCC4FC10-725A-4E49-8E1E-75F8989518C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECSImplementation", "ECSImplementation\ECSImplementation.csproj", "{FCC4FC10-725A-4E49-8E1E-75F8989518C5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ECSFoundation", "ECSFoundation\ECSFoundation.csproj", "{1983A56B-9844-4204-82A0-358D22950EBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pong", "Pong\Pong.csproj", "{21785866-AE99-493C-A364-7319D3233E8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1983A56B-9844-4204-82A0-358D22950EBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1983A56B-9844-4204-82A0-358D22950EBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1983A56B-9844-4204-82A0-358D22950EBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21785866-AE99-493C-A364-7319D3233E8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21785866-AE99-493C-A364-7319D3233E8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21785866-AE99-493C-A364-7319D3233E8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21785866-AE99-493C-A364-7319D3233E8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

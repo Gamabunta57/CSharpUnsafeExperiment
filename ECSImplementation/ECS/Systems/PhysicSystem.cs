@@ -1,12 +1,12 @@
 ﻿using ECSFoundation.ECS.Entities;
 using ECSFoundation.ECS.Systems;
-using ECSUnsafeTest.ECS.Component;
-using ECSUnsafeTest.Global;
-using ECSUnsafeTest.utils;
+using ECSImplementation.ECS.Component;
+using ECSImplementation.Global;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace ECSUnsafeTest.ECS.Systems
+namespace ECSImplementation.ECS.Systems
 {
     /*TODO: 
      * - migrate the code to have a better architecture
@@ -29,7 +29,7 @@ namespace ECSUnsafeTest.ECS.Systems
             collidableByLayer = new IList<ICollidable>[layerCount];
             collisionMatrix = new IList<Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>>[layerCount];
 
-            for(var i = 0; i < layerCount; i++)
+            for (var i = 0; i < layerCount; i++)
             {
                 collidableByLayer[i] = new List<ICollidable>();
                 collisionMatrix[i] = new List<Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>>();
@@ -43,7 +43,7 @@ namespace ECSUnsafeTest.ECS.Systems
         }
         public void NotifyNewEntity(ICollidable entity) => collidableByLayer[(uint)entity.Collider.type].Add(entity);
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             for (var i = 0; i < collisionMatrix.Length; i++)
             {
@@ -58,7 +58,7 @@ namespace ECSUnsafeTest.ECS.Systems
                     for (var k = 0; k < entityListA.Count; k++)
                     {
                         var a = entityListA[k];
-                        for (var l = 0; l <entityListB.Count; l++)
+                        for (var l = 0; l < entityListB.Count; l++)
                         {
                             var b = entityListB[l];
                             var fullExtent = a.Collider.halfExtent + b.Collider.halfExtent;

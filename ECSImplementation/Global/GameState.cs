@@ -1,5 +1,5 @@
 ﻿
-namespace ECSUnsafeTest.Global
+namespace ECSImplementation.Global
 {
     public static class GameState
     {

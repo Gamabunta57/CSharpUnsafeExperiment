@@ -1,8 +1,8 @@
-﻿using ECSUnsafeTest.Global;
-using ECSUnsafeTest.utils;
+﻿using ECSImplementation.Global;
+using Microsoft.Xna.Framework;
 using System;
 
-namespace ECSUnsafeTest.ECS.Systems.Subsytem
+namespace ECSImplementation.ECS.Systems.Subsytem
 {
     public static class CollisionResponse
     {
@@ -10,7 +10,7 @@ namespace ECSUnsafeTest.ECS.Systems.Subsytem
         {
             var movableBall = (IMovable)ball;
             Console.WriteLine($"Ball before pos: {movableBall.Position.Value}, heading: {movableBall.Heading.Value}");
-            
+
             if (Math.Abs(penetration.X) <= Math.Abs(penetration.Y))
             {
                 movableBall.Position.Value.X += player.Position.Value.X < movableBall.Position.Value.X ? penetration.X : -penetration.X;
@@ -47,6 +47,6 @@ namespace ECSUnsafeTest.ECS.Systems.Subsytem
         }
 
         public static void OnPlayerHitsTheWall(ICollidable player, ICollidable wall, Vector2 penetration) =>
-            player.Position.Value.Y += (penetration.Y < 0) ? -penetration.Y : penetration.Y;
+            player.Position.Value.Y += player.Position.Value.Y < wall.Position.Value.Y ? -penetration.Y : penetration.Y;
     }
 }

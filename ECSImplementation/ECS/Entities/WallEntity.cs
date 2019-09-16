@@ -1,8 +1,8 @@
 ﻿using ECSFoundation.ECS.Component;
-using ECSUnsafeTest.ECS.Component;
-using ECSUnsafeTest.ECS.Systems;
+using ECSImplementation.ECS.Component;
+using ECSImplementation.ECS.Systems;
 
-namespace ECSUnsafeTest.ECS.Entities
+namespace ECSImplementation.ECS.Entities
 {
     public unsafe struct WallEntity : ICollidable
     {
