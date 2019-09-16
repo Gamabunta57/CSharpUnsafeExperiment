@@ -18,7 +18,6 @@ namespace ECSUnsafeTest
 
                 for (var i = 0; i < 200; i++)
                 {
-                    Console.WriteLine("=========================: New frame");
                     scene.Update();
                     Thread.Sleep(1000 / 60);
                 }

@@ -1,13 +1,14 @@
 ﻿using ECSUnsafeTest.Global;
 using ECSUnsafeTest.utils;
 using System;
+
 namespace ECSUnsafeTest.ECS.Systems.Subsytem
 {
     public static class CollisionResponse
     {
         public static void OnPlayerAndBallCollide(ICollidable player, ICollidable ball, Vector2 penetration)
         {
-            var movableBall = ((IMovable)ball);
+            var movableBall = (IMovable)ball;
             Console.WriteLine($"Ball before pos: {movableBall.Position.Value}, heading: {movableBall.Heading.Value}");
             
             if (Math.Abs(penetration.X) <= Math.Abs(penetration.Y))
@@ -17,7 +18,7 @@ namespace ECSUnsafeTest.ECS.Systems.Subsytem
             }
             else
             {
-                movableBall.Position.Value.Y += player.Position.Value.Y < movableBall.Position.Value.Y ? -penetration.Y : penetration.Y;
+                movableBall.Position.Value.Y += player.Position.Value.Y < movableBall.Position.Value.Y ? penetration.Y : -penetration.Y;
                 movableBall.Heading.Value.Y *= -1;
             }
             Console.WriteLine($"Ball after  pos: {movableBall.Position.Value}, heading: {movableBall.Heading.Value}");

@@ -80,7 +80,7 @@ namespace ECSUnsafeTest.ECS.Systems
                                 Y = fullExtent.Y - Math.Abs(centerB.Y) - Math.Abs(centerA.Y)
                             };
 
-                            collisionMatrix[i][j].Item2.Invoke(collidableByLayer[i][k], collidableByLayer[i][l], penetrationVector);
+                            collisionMatrix[i][j].Item2.Invoke(a, b, penetrationVector);
                         }
                     }
                 }

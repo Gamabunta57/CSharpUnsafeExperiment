@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ECSFoundation.ECS.Entities;
 using ECSFoundation.ECS.Systems;
 using ECSUnsafeTest.ECS.Component;
@@ -26,11 +25,7 @@ namespace ECSUnsafeTest.ECS.Systems
         public void Update()
         {
             foreach(var entity in idList)
-            {
                 entity.Position.Value += entity.Heading.Value;
-                if (entity.BaseEntity.Id == 2)
-                    Console.WriteLine($"Ball new pos: {entity.Position.Value}");
-            }
         }
 
         readonly IList<IMovable> idList = new List<IMovable>();
