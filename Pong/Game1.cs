@@ -62,5 +62,11 @@ namespace Pong
 
             base.Draw(gameTime);
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                allocator.Dispose();
+        }
     }
 }
