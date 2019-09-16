@@ -67,6 +67,8 @@ namespace Pong
         {
             if (disposing)
                 allocator.Dispose();
+
+            base.Dispose(disposing);
         }
     }
 }
