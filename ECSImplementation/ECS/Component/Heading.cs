@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace ECSImplementation.ECS.Component
 {
-    [AllocateMemory(0x03)]
+    [AllocateMemory(65535)]
     public struct Heading
     {
         public Vector2 Value;

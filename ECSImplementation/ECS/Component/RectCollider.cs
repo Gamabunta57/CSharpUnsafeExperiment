@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace ECSImplementation.ECS.Component
 {
-    [AllocateMemory(0x07)]
+    [AllocateMemory(65535)]
     public struct RectCollider
     {
         public Vector2 Center;

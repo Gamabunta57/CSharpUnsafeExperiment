@@ -11,7 +11,7 @@ namespace Pong
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Scene scene;
+        StressScene scene;
         Texture2D whitePixel;
         MemoryAllocator allocator;
 
@@ -30,7 +30,7 @@ namespace Pong
             allocator = MemoryBuilder.BuildMemoryAllocator();
             EntityManager.Init(allocator);
 
-            scene = new Scene();
+            scene = new StressScene();
             scene.Load();
 
             base.Initialize();

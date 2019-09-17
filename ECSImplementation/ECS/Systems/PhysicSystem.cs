@@ -1,7 +1,6 @@
 ﻿using ECSFoundation.ECS.Entities;
 using ECSFoundation.ECS.Systems;
 using ECSImplementation.ECS.Component;
-using ECSImplementation.Global;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -61,6 +60,9 @@ namespace ECSImplementation.ECS.Systems
                         for (var l = 0; l < entityListB.Count; l++)
                         {
                             var b = entityListB[l];
+                            if (a.BaseEntity.Id == b.BaseEntity.Id)
+                                continue;
+
                             var fullExtent = a.Collider.halfExtent + b.Collider.halfExtent;
                             ref var centerA = ref a.Collider.Center;
                             var centerB = b.Position.Value + b.Collider.Center - a.Position.Value;
@@ -72,7 +74,6 @@ namespace ECSImplementation.ECS.Systems
 
                             if (!isColliding) continue;
 
-                            Console.WriteLine($"IsColliding #{a.BaseEntity.Id} | #{b.BaseEntity.Id}");
 
                             var penetrationVector = new Vector2
                             {

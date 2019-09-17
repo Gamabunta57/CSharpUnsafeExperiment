@@ -3,7 +3,7 @@
 namespace ECSFoundation.ECS.Component
 {
 
-    [AllocateMemory(0x07)]
+    [AllocateMemory(65535)]
     public struct BaseEntity
     {
         public int Id;
