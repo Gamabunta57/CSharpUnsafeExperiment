@@ -73,29 +73,35 @@ namespace ECSImplementation.ECS.Systems.Subsytem
             var movableBallA = (IMovable)ballA;
             var movableBallB = (IMovable)ballB;
 
-            if (Math.Abs(penetration.X) <= Math.Abs(penetration.Y))
+            if (penetration.X <= penetration.Y)
             {
                 var isBallAOnLeft = movableBallA.Position.Value.X < movableBallB.Position.Value.X;
                 var directionA = Math.Abs(movableBallA.Heading.Value.X);
                 var directionB = Math.Abs(movableBallB.Heading.Value.X);
 
-                movableBallA.Position.Value.X += (isBallAOnLeft ? -penetration.X : penetration.X) * .5f;
-                movableBallB.Position.Value.X += (isBallAOnLeft ? penetration.X :-penetration.X) *.5f;
+                var penetrationA = penetration.X * .5f;
+                var penetrationB = 1 - penetrationA;
+
+                movableBallA.Position.Value.X += isBallAOnLeft ? -penetrationA : penetrationA;
+                movableBallB.Position.Value.X += isBallAOnLeft ? penetrationB : penetrationB;
 
                 movableBallA.Heading.Value.X = isBallAOnLeft && movableBallA.Heading.Value.X > 0 ? -directionA : directionA;
-                movableBallB.Heading.Value.X = isBallAOnLeft && movableBallB.Heading.Value.X > 0 ? directionB : -directionB;
+                movableBallB.Heading.Value.X = movableBallA.Heading.Value.X > 0 ? -directionB : directionB;
             }
             else
             {
                 var isBallAOnTop = movableBallA.Position.Value.Y < movableBallB.Position.Value.Y;
-                var directionA = Math.Abs(movableBallA.Heading.Value.X);
-                var directionB = Math.Abs(movableBallB.Heading.Value.X);
+                var directionA = Math.Abs(movableBallA.Heading.Value.Y);
+                var directionB = Math.Abs(movableBallB.Heading.Value.Y);
 
-                movableBallA.Position.Value.Y += (isBallAOnTop ? -penetration.Y : penetration.Y) * .5f;
-                movableBallB.Position.Value.Y += (isBallAOnTop ? penetration.Y : -penetration.Y) * .5f;
+                var penetrationA = penetration.Y * .5f;
+                var penetrationB = 1 - penetrationA;
+
+                movableBallA.Position.Value.Y += isBallAOnTop ? -penetrationA : penetrationA;
+                movableBallB.Position.Value.Y += isBallAOnTop ? penetrationB : -penetrationB;
 
                 movableBallA.Heading.Value.Y = isBallAOnTop && movableBallA.Heading.Value.Y > 0 ? -directionA : directionA;
-                movableBallB.Heading.Value.Y = isBallAOnTop && movableBallB.Heading.Value.Y > 0 ? directionB : -directionB;
+                movableBallB.Heading.Value.Y = movableBallA.Heading.Value.Y > 0 ? -directionB : directionB;
             }
         }
 

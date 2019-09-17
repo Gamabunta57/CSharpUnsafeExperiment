@@ -66,8 +66,12 @@ namespace ECSImplementation.Scenes
             spriteBatch.Draw(whitePixel, new Rectangle((_wallLeft.Position.Value - _wallLeft.Collider.halfExtent).ToPoint(), (_wallLeft.Collider.halfExtent * 2).ToPoint()), Color.DarkGoldenrod);
             spriteBatch.Draw(whitePixel, new Rectangle((_wallRight.Position.Value - _wallRight.Collider.halfExtent).ToPoint(), (_wallRight.Collider.halfExtent * 2).ToPoint()), Color.DarkGoldenrod);
 
+            var toggle = false;
             for (var i = 0; i < _ballCount - 4; i++)
-                spriteBatch.Draw(whitePixel, new Rectangle((_ballList[i].Position.Value - _ballList[i].Collider.halfExtent).ToPoint(), (_ballList[i].Collider.halfExtent * 2).ToPoint()), Color.White);
+            {
+                spriteBatch.Draw(whitePixel, new Rectangle((_ballList[i].Position.Value - _ballList[i].Collider.halfExtent).ToPoint(), (_ballList[i].Collider.halfExtent * 2).ToPoint()), toggle ? Color.CadetBlue : Color.MediumVioletRed);
+                toggle = !toggle;
+            }
 
             spriteBatch.End();
         }
@@ -79,7 +83,7 @@ namespace ECSImplementation.Scenes
             {
                 _ballList[i].Heading.Value = GetRandomVectorOrientation();
                 _ballList[i].Heading.Velocity = 150;
-                _ballList[i].Position.Value = GetRandomPosition();
+                _ballList[i].Position.Value = new Vector2(320,240);// GetRandomPosition();
                 _ballList[i].Collider.halfExtent = new Vector2 { X = 5, Y = 5 };
                 _ballList[i].Collider.Center = new Vector2 { X = 0, Y = 0 };
                 _ballList[i].Collider.type = CollisionLayer.Ball;
@@ -100,7 +104,7 @@ namespace ECSImplementation.Scenes
             _wallLeft.Collider.Center = new Vector2 { X = 0, Y = 0 };
             _wallLeft.Collider.type = CollisionLayer.Wall;
 
-            _wallRight.Position.Value = new Vector2 { X = 470, Y = 240 };
+            _wallRight.Position.Value = new Vector2 { X = 630, Y = 240 };
             _wallRight.Collider.halfExtent = new Vector2 { X = 10, Y = 240 };
             _wallRight.Collider.Center = new Vector2 { X = 0, Y = 0 };
             _wallRight.Collider.type = CollisionLayer.Wall;
@@ -130,7 +134,7 @@ namespace ECSImplementation.Scenes
 
         private Vector2 GetRandomPosition()
         {
-            return new Vector2 { X =(float)(_rand.NextDouble() *440f + 20), Y = (float)(_rand.NextDouble() * 440f + 20) };
+            return new Vector2 { X =(float)(_rand.NextDouble() *600f + 20), Y = (float)(_rand.NextDouble() * 440f + 20) };
         }
 
         readonly IList<ISystem> _systemList;

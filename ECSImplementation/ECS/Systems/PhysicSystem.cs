@@ -53,39 +53,50 @@ namespace ECSImplementation.ECS.Systems
                 {
                     var layerB = collidingWithLayerA[j].Item1;
                     var entityListB = collidableByLayer[(uint)layerB];
+                    var callback = collisionMatrix[i][j].Item2;
 
-                    for (var k = 0; k < entityListA.Count; k++)
+                    if (layerB == (CollisionLayer)i)
                     {
-                        var a = entityListA[k];
-                        for (var l = 0; l < entityListB.Count; l++)
+                        for (var k = 0; k < entityListA.Count - 1; k++)
                         {
-                            var b = entityListB[l];
-                            if (a.BaseEntity.Id == b.BaseEntity.Id)
-                                continue;
-
-                            var fullExtent = a.Collider.halfExtent + b.Collider.halfExtent;
-                            ref var centerA = ref a.Collider.Center;
-                            var centerB = b.Position.Value + b.Collider.Center - a.Position.Value;
-
-                            var isColliding = centerB.X < centerA.X + fullExtent.X
-                                && centerB.X > centerA.X - fullExtent.X
-                                && centerB.Y < centerA.Y + fullExtent.Y
-                                && centerB.Y > centerA.Y - fullExtent.Y;
-
-                            if (!isColliding) continue;
-
-
-                            var penetrationVector = new Vector2
-                            {
-                                X = fullExtent.X - Math.Abs(centerB.X) - Math.Abs(centerA.X),
-                                Y = fullExtent.Y - Math.Abs(centerB.Y) - Math.Abs(centerA.Y)
-                            };
-
-                            collisionMatrix[i][j].Item2.Invoke(a, b, penetrationVector);
+                            var a = entityListA[k];
+                            for (var l = k + 1; l < entityListA.Count; l++)
+                                CheckCollision(a, entityListA[l], callback);
+                        }
+                    }
+                    else
+                    {
+                        for (var k = 0; k < entityListA.Count; k++)
+                        {
+                            var a = entityListA[k];
+                            for (var l = 0; l < entityListB.Count; l++)
+                                CheckCollision(a, entityListB[l], callback);
                         }
                     }
                 }
             }
+        }
+
+        void CheckCollision(ICollidable a, ICollidable b, Action<ICollidable, ICollidable, Vector2> callback)
+        {
+            var fullExtent = a.Collider.halfExtent + b.Collider.halfExtent;
+            ref var centerA = ref a.Collider.Center;
+            var centerB = b.Position.Value + b.Collider.Center - a.Position.Value;
+
+            var isColliding = centerB.X < centerA.X + fullExtent.X
+                && centerB.X > centerA.X - fullExtent.X
+                && centerB.Y < centerA.Y + fullExtent.Y
+                && centerB.Y > centerA.Y - fullExtent.Y;
+
+            if (!isColliding) return;
+
+            var penetrationVector = new Vector2
+            {
+                X = fullExtent.X - Math.Abs(centerB.X) - Math.Abs(centerA.X),
+                Y = fullExtent.Y - Math.Abs(centerB.Y) - Math.Abs(centerA.Y)
+            };
+
+            callback.Invoke(a, b, penetrationVector);
         }
 
         readonly IList<ICollidable>[] collidableByLayer;
