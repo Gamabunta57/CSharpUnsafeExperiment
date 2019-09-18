@@ -13,14 +13,22 @@ namespace ECSImplementation.ECS.Systems.Subsytem
 
             if (Math.Abs(penetration.X) <= Math.Abs(penetration.Y))
             {
-                movableBall.Position.Value.X += player.Position.Value.X < movableBall.Position.Value.X ? penetration.X : -penetration.X;
-                movableBall.Heading.Value.X *= -1;
+                var isPadOnLeft = player.Position.Value.X < ball.Position.Value.X;
+
+                movableBall.Position.Value.X += isPadOnLeft ? penetration.X : -penetration.X;
+                movableBall.Heading.Value.X = isPadOnLeft ? 1 : -1;
+
+                movableBall.Heading.Value.Y = (movableBall.Position.Value.Y + ball.Collider.Center.Y - player.Position.Value.Y - player.Collider.Center.Y) / (ball.Collider.halfExtent.Y + player.Collider.halfExtent.Y);
+                movableBall.Heading.Velocity += (1 - Math.Abs(movableBall.Heading.Value.Y)) * 30;
             }
             else
             {
-                movableBall.Position.Value.Y += player.Position.Value.Y < movableBall.Position.Value.Y ? penetration.Y : -penetration.Y;
-                movableBall.Heading.Value.Y *= -1;
+                var isPadOnTop = player.Position.Value.Y < ball.Position.Value.Y;
+
+                movableBall.Position.Value.Y += isPadOnTop ? penetration.Y : -penetration.Y;
+                movableBall.Heading.Value.Y = isPadOnTop ? Math.Abs(movableBall.Heading.Value.Y) : -Math.Abs(movableBall.Heading.Value.Y);
             }
+            movableBall.Heading.Value.Normalize();
             Console.WriteLine($"Ball after  pos: {movableBall.Position.Value}, heading: {movableBall.Heading.Value}");
         }
 
@@ -83,7 +91,7 @@ namespace ECSImplementation.ECS.Systems.Subsytem
                 var penetrationB = 1 - penetrationA;
 
                 movableBallA.Position.Value.X += isBallAOnLeft ? -penetrationA : penetrationA;
-                movableBallB.Position.Value.X += isBallAOnLeft ? penetrationB : penetrationB;
+                movableBallB.Position.Value.X += isBallAOnLeft ? penetrationB : -penetrationB;
 
                 movableBallA.Heading.Value.X = isBallAOnLeft && movableBallA.Heading.Value.X > 0 ? -directionA : directionA;
                 movableBallB.Heading.Value.X = movableBallA.Heading.Value.X > 0 ? -directionB : directionB;

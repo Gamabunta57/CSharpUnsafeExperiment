@@ -5,6 +5,7 @@ using ECSFoundation.ECS.Systems;
 using ECSImplementation.ECS.Component;
 using ECSImplementation.ECS.Entities;
 using ECSImplementation.ECS.Systems;
+using ECSImplementation.ECS.Systems.DrawSystem;
 using ECSImplementation.ECS.Systems.Subsytem;
 using ECSImplementation.Global;
 using Microsoft.Xna.Framework;
@@ -18,6 +19,7 @@ namespace ECSImplementation.Scenes
         {
             _physics = new PhysicSystem((uint)Enum.GetNames(typeof(CollisionLayer)).Length);
             _systemList = new List<ISystem>();
+            _drawSystemList = new List<IDrawSystem>();
             _rand = new Random();
         }
 
@@ -29,6 +31,8 @@ namespace ECSImplementation.Scenes
             _systemList.Add(new ProcessMovableSystem());
             _systemList.Add(_physics);
             _systemList.Add(new MatchSystem(this));
+
+            _drawSystemList.Add(new MainSceneDrawSystem());
 
             _player1 = EntityManager.NewEntity<PlayerEntity>();
             _player2 = EntityManager.NewEntity<PlayerEntity>();
@@ -64,64 +68,76 @@ namespace ECSImplementation.Scenes
                 system.Update(gameTime);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Texture2D whitePixel)
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin();
-
-            spriteBatch.Draw(whitePixel, new Rectangle((_player1.Position.Value - _player1.Collider.halfExtent).ToPoint(), (_player1.Collider.halfExtent * 2).ToPoint()), Color.MediumPurple);
-            spriteBatch.Draw(whitePixel, new Rectangle((_player2.Position.Value - _player2.Collider.halfExtent).ToPoint(), (_player2.Collider.halfExtent * 2).ToPoint()), Color.MediumSeaGreen);
-
-            spriteBatch.Draw(whitePixel, new Rectangle((_wallTop.Position.Value - _wallTop.Collider.halfExtent).ToPoint(), (_wallTop.Collider.halfExtent * 2).ToPoint()), Color.DarkGoldenrod);
-            spriteBatch.Draw(whitePixel, new Rectangle((_wallBottom.Position.Value - _wallBottom.Collider.halfExtent).ToPoint(), (_wallBottom.Collider.halfExtent * 2).ToPoint()), Color.DarkGoldenrod);
-
-            spriteBatch.Draw(whitePixel, new Rectangle((_ball.Position.Value - _ball.Collider.halfExtent).ToPoint(), (_ball.Collider.halfExtent * 2).ToPoint()), Color.White);
-
-            spriteBatch.End();
+            for (var i = 0; i < _drawSystemList.Count; i++)
+                _drawSystemList[i].Draw(gameTime, spriteBatch);
         }
 
         void DoReset(bool isFullReset)
         {
+
+            var collider = new Vector2 { X = 5, Y = 30 };
             _player1.Heading.Value = new Vector2 { X = 0, Y = 0 };
             _player1.Heading.Velocity = 120;
             _player1.Position.Value = new Vector2 { X = 20, Y = 240 };
-            _player1.Collider.halfExtent = new Vector2 { X = 5, Y = 30 };
-            _player1.Collider.Center = new Vector2 { X = 0, Y = 0 };
+            _player1.Collider.halfExtent = collider;
+            _player1.Collider.Center = collider;
             _player1.Collider.type = CollisionLayer.Player;
+            _player1.SpriteInfo.Size = collider * 2;
+            _player1.SpriteInfo.Color = Color.MediumPurple;
 
+            collider = new Vector2 { X = 5, Y = 30 };
             _player2.Heading.Value = new Vector2 { X = 0, Y = 0 };
             _player2.Heading.Velocity = 120;
             _player2.Position.Value = new Vector2 { X = 620, Y = 240 };
-            _player2.Collider.halfExtent = new Vector2 { X = 5, Y = 30 };
-            _player2.Collider.Center = new Vector2 { X = 0, Y = 0 };
+            _player2.Collider.halfExtent = collider;
+            _player2.Collider.Center = collider;
             _player2.Collider.type = CollisionLayer.Player;
+            _player2.SpriteInfo.Size = collider * 2;
+            _player2.SpriteInfo.Color = Color.MediumSeaGreen;
 
-
+            collider = new Vector2 { X = 5, Y = 5 };
             _ball.Heading.Value = GetRandomVectorOrientation();
             _ball.Heading.Velocity = 150;
-            _ball.Position.Value = new Vector2 { X = 320, Y = 240 };
-            _ball.Collider.halfExtent = new Vector2 { X = 5, Y = 5 };
-            _ball.Collider.Center = new Vector2 { X = 0, Y = 0 };
+            _ball.Position.Value = new Vector2 { X = 315, Y = 235 };
+            _ball.Collider.halfExtent = collider;
+            _ball.Collider.Center = collider;
             _ball.Collider.type = CollisionLayer.Ball;
+            _ball.SpriteInfo.Size = collider * 2;
+            _ball.SpriteInfo.Color = Color.White;
 
-            _wallTop.Position.Value = new Vector2 { X = 320, Y = 10 };
-            _wallTop.Collider.halfExtent = new Vector2 { X = 320, Y = 10 };
-            _wallTop.Collider.Center = new Vector2 { X = 0, Y = 0 };
+            collider = new Vector2 { X = 320, Y = 10 };
+            _wallTop.Position.Value = new Vector2 { X = 0, Y = 0 };
+            _wallTop.Collider.halfExtent = collider;
+            _wallTop.Collider.Center = collider;
             _wallTop.Collider.type = CollisionLayer.Wall;
+            _wallTop.SpriteInfo.Size = collider * 2;
+            _wallTop.SpriteInfo.Color = Color.DarkGoldenrod;
 
-            _wallBottom.Position.Value = new Vector2 { X = 320, Y = 470 };
-            _wallBottom.Collider.halfExtent = new Vector2 { X = 320, Y = 10 };
-            _wallBottom.Collider.Center = new Vector2 { X = 0, Y = 0 };
+            collider = new Vector2 { X = 320, Y = 10 };
+            _wallBottom.Position.Value = new Vector2 { X = 0, Y = 460 };
+            _wallBottom.Collider.halfExtent = collider;
+            _wallBottom.Collider.Center = collider;
             _wallBottom.Collider.type = CollisionLayer.Wall;
+            _wallBottom.SpriteInfo.Size = collider * 2;
+            _wallBottom.SpriteInfo.Color = Color.DarkGoldenrod;
 
-            _goalLeft.Position.Value = new Vector2 { X = -10, Y = 240 };
-            _goalLeft.Collider.halfExtent = new Vector2 { X = 10, Y = 240 };
-            _goalLeft.Collider.Center = new Vector2 { X = 0, Y = 0 };
+            collider = new Vector2 { X = 10, Y = 240 };
+            _goalLeft.Position.Value = new Vector2 { X = -20, Y = 0 };
+            _goalLeft.Collider.halfExtent = collider;
+            _goalLeft.Collider.Center = collider;
             _goalLeft.Collider.type = CollisionLayer.GoalPlayer2;
+            _goalLeft.SpriteInfo.Size = collider * 2;
+            _goalLeft.SpriteInfo.Color = Color.White;
 
-            _goalRight.Position.Value = new Vector2 { X = 650, Y = 240 };
-            _goalRight.Collider.halfExtent = new Vector2 { X = 10, Y = 240 };
-            _goalRight.Collider.Center = new Vector2 { X = 0, Y = 0 };
+            collider = new Vector2 { X = 10, Y = 240 };
+            _goalRight.Position.Value = new Vector2 { X = 640, Y = 0 };
+            _goalRight.Collider.halfExtent = collider;
+            _goalRight.Collider.Center = collider;
             _goalRight.Collider.type = CollisionLayer.GoalPlayer1;
+            _goalRight.SpriteInfo.Size = collider * 2;
+            _goalRight.SpriteInfo.Color = Color.White;
 
             if (isFullReset)
             {
@@ -148,6 +164,7 @@ namespace ECSImplementation.Scenes
         }
 
         readonly IList<ISystem> _systemList;
+        readonly IList<IDrawSystem> _drawSystemList;
         readonly PhysicSystem _physics;
         readonly Random _rand;
 

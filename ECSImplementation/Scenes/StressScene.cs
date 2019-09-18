@@ -45,7 +45,7 @@ namespace ECSImplementation.Scenes
             Console.WriteLine($"#{_wallRight.BaseEntity.Id}: GoalRight");
 
             _physics.SetLayersAsCollidableTogether(CollisionLayer.Ball, CollisionLayer.Wall, CollisionResponse.OnBallTouchWallFull);
-            _physics.SetLayersAsCollidableTogether(CollisionLayer.Ball, CollisionLayer.Ball, CollisionResponse.OnBallsCollide);
+            _physics.SetLayersAsCollidable(CollisionLayer.Ball, CollisionResponse.OnBallsCollide);
 
             DoReset(true);
         }
@@ -83,7 +83,7 @@ namespace ECSImplementation.Scenes
             {
                 _ballList[i].Heading.Value = GetRandomVectorOrientation();
                 _ballList[i].Heading.Velocity = 150;
-                _ballList[i].Position.Value = new Vector2(320,240);// GetRandomPosition();
+                _ballList[i].Position.Value = GetRandomPosition();
                 _ballList[i].Collider.halfExtent = new Vector2 { X = 5, Y = 5 };
                 _ballList[i].Collider.Center = new Vector2 { X = 0, Y = 0 };
                 _ballList[i].Collider.type = CollisionLayer.Ball;
@@ -140,13 +140,13 @@ namespace ECSImplementation.Scenes
         readonly IList<ISystem> _systemList;
         readonly PhysicSystem _physics;
         readonly Random _rand;
+        readonly BallEntity[] _ballList;
 
-        BallEntity[] _ballList;
         WallEntity _wallTop;
         WallEntity _wallBottom;
         WallEntity _wallLeft;
         WallEntity _wallRight;
 
-        int _ballCount = 200 + 4;
+        int _ballCount = 800 + 4;
     }
 }

@@ -4,6 +4,7 @@ using ECSImplementation.ECS.Component;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace ECSImplementation.ECS.Systems
 {
@@ -20,13 +21,14 @@ namespace ECSImplementation.ECS.Systems
         ref RectCollider Collider { get; }
     }
 
-    class PhysicSystem : ISystem
+    public class PhysicSystem : ISystem
     {
 
         public PhysicSystem(uint layerCount)
         {
             collidableByLayer = new IList<ICollidable>[layerCount];
             collisionMatrix = new IList<Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>>[layerCount];
+            singleLayerCollisionMatrix = new List<Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>>();
 
             for (var i = 0; i < layerCount; i++)
             {
@@ -40,7 +42,18 @@ namespace ECSImplementation.ECS.Systems
             var tuple = new Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>(layerB, callback);
             collisionMatrix[(int)layerA].Add(tuple);
         }
-        public void NotifyNewEntity(ICollidable entity) => collidableByLayer[(uint)entity.Collider.type].Add(entity);
+
+        public void SetLayersAsCollidable(CollisionLayer layer, Action<ICollidable, ICollidable, Vector2> callback)
+        {
+            var tuple = new Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>(layer, callback);
+            singleLayerCollisionMatrix.Add(tuple);
+        }
+
+        public void NotifyNewEntity(ICollidable entity)
+        {
+            Console.WriteLine($"New physics: #{entity.BaseEntity.Id}, {(int)entity.Collider.type}: {entity.Collider.type.ToString()}");
+            collidableByLayer[(uint)entity.Collider.type].Add(entity);
+        }
 
         public void Update(GameTime gameTime)
         {
@@ -54,46 +67,39 @@ namespace ECSImplementation.ECS.Systems
                     var layerB = collidingWithLayerA[j].Item1;
                     var entityListB = collidableByLayer[(uint)layerB];
                     var callback = collisionMatrix[i][j].Item2;
-
-                    if (layerB == (CollisionLayer)i)
-                    {
-                        for (var k = 0; k < entityListA.Count - 1; k++)
-                        {
-                            var a = entityListA[k];
-                            for (var l = k + 1; l < entityListA.Count; l++)
-                                CheckCollision(a, entityListA[l], callback);
-                        }
-                    }
-                    else
-                    {
-                        for (var k = 0; k < entityListA.Count; k++)
-                        {
-                            var a = entityListA[k];
-                            for (var l = 0; l < entityListB.Count; l++)
-                                CheckCollision(a, entityListB[l], callback);
-                        }
-                    }
+                    for (var k = 0; k < entityListA.Count; k++)
+                        for (var l = 0; l < entityListB.Count; l++)
+                            CheckCollision(entityListA[k], entityListB[l], callback);
                 }
+            }
+
+            for (var i = 0; i < singleLayerCollisionMatrix.Count; i++)
+            {
+                var entityList = collidableByLayer[(int)singleLayerCollisionMatrix[i].Item1];
+                var callback = singleLayerCollisionMatrix[i].Item2;
+                for (var k = 0; k < entityList.Count - 1; k++)
+                    for (var l = k + 1; l < entityList.Count; l++)
+                        CheckCollision(entityList[k], entityList[l], callback);
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         void CheckCollision(ICollidable a, ICollidable b, Action<ICollidable, ICollidable, Vector2> callback)
         {
             var fullExtent = a.Collider.halfExtent + b.Collider.halfExtent;
-            ref var centerA = ref a.Collider.Center;
-            var centerB = b.Position.Value + b.Collider.Center - a.Position.Value;
+            var centerB = b.Position.Value + b.Collider.Center - a.Position.Value - a.Collider.Center;
 
-            var isColliding = centerB.X < centerA.X + fullExtent.X
-                && centerB.X > centerA.X - fullExtent.X
-                && centerB.Y < centerA.Y + fullExtent.Y
-                && centerB.Y > centerA.Y - fullExtent.Y;
+            var isColliding = centerB.X < fullExtent.X
+                && centerB.X > -fullExtent.X
+                && centerB.Y < fullExtent.Y
+                && centerB.Y > -fullExtent.Y;
 
             if (!isColliding) return;
 
             var penetrationVector = new Vector2
             {
-                X = fullExtent.X - Math.Abs(centerB.X) - Math.Abs(centerA.X),
-                Y = fullExtent.Y - Math.Abs(centerB.Y) - Math.Abs(centerA.Y)
+                X = fullExtent.X - Math.Abs(centerB.X),
+                Y = fullExtent.Y - Math.Abs(centerB.Y)
             };
 
             callback.Invoke(a, b, penetrationVector);
@@ -101,5 +107,6 @@ namespace ECSImplementation.ECS.Systems
 
         readonly IList<ICollidable>[] collidableByLayer;
         readonly IList<Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>>[] collisionMatrix;
+        readonly IList<Tuple<CollisionLayer, Action<ICollidable, ICollidable, Vector2>>> singleLayerCollisionMatrix;
     }
 }
