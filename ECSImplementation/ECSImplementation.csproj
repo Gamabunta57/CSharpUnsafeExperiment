@@ -17,9 +17,7 @@
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Scenes\" />
     <Folder Include="ECS\Component\" />
-    <Folder Include="ECS\Systems\DrawSystem\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Entities\EntityBuilder.cs" />

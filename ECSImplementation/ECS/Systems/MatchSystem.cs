@@ -6,51 +6,47 @@ using System;
 
 namespace ECSImplementation.ECS.Systems
 {
-    class MatchSystem : ISystem
+    public class MatchSystem : ISystem
     {
-        Scene _mainScene;
-        public MatchSystem(Scene mainScene) => _mainScene = mainScene;
+
+        public const uint Score = 3;
+        public MatchSystem(SceneManager sceneManager) => _sceneManager = sceneManager;
 
         public void Update(GameTime gameTime)
         {
-            if (!GameState.Player1Scored && !GameState.Player2Scored)
+            if (!MatchState.Player1Scored && !MatchState.Player2Scored)
                 return;
 
-            GameState.MatchNumber++;
+            MatchState.MatchNumber++;
 
-            if (GameState.Player1Scored)
+            if (MatchState.Player1Scored)
             {
-                GameState.ScorePlayer1++;
-                if (GameState.ScorePlayer1 >= 10)
+                MatchState.ScorePlayer1++;
+                if (MatchState.ScorePlayer1 >= Score)
                 {
-                    Console.WriteLine($"Player 1 win the game {GameState.ScorePlayer1} - {GameState.ScorePlayer2}");
-                    Reset();
+                    Console.WriteLine($"Player 1 win the game {MatchState.ScorePlayer1} - {MatchState.ScorePlayer2}");
+                    _sceneManager.SetNewScene(new GameOverScene((uint)MatchState.ScorePlayer1, (uint)MatchState.ScorePlayer2));
+                    MatchState.Reset();
                 }
 
             }
             else
             {
-                GameState.ScorePlayer2++;
-                if (GameState.ScorePlayer2 >= 10)
+                MatchState.ScorePlayer2++;
+                if (MatchState.ScorePlayer2 >= Score)
                 {
-                    Console.WriteLine($"Player 2 win the game {GameState.ScorePlayer1} - {GameState.ScorePlayer2}");
-                    Reset();
+                    Console.WriteLine($"Player 2 win the game {MatchState.ScorePlayer1} - {MatchState.ScorePlayer2}");
+                    _sceneManager.SetNewScene(new GameOverScene((uint)MatchState.ScorePlayer1, (uint)MatchState.ScorePlayer2));
+                    MatchState.Reset();
                 }
             }
 
-            GameState.Player1Scored = false;
-            GameState.Player2Scored = false;
+            MatchState.Player1Scored = false;
+            MatchState.Player2Scored = false;
 
-            _mainScene.Reset();
+            _sceneManager.Reset();
         }
 
-        void Reset()
-        {
-            GameState.ScorePlayer1 = 0;
-            GameState.ScorePlayer2 = 0;
-            GameState.MatchNumber = 1;
-            GameState.Player1Scored = false;
-            GameState.Player2Scored = false;
-        }
+        SceneManager _sceneManager;
     }
 }

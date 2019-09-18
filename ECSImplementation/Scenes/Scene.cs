@@ -8,31 +8,47 @@ using ECSImplementation.ECS.Systems;
 using ECSImplementation.ECS.Systems.DrawSystem;
 using ECSImplementation.ECS.Systems.Subsytem;
 using ECSImplementation.Global;
+using ECSImplementation.Menus;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ECSImplementation.Scenes
 {
-    public class Scene
+    public class Scene : IScene
     {
         public Scene()
         {
             _physics = new PhysicSystem((uint)Enum.GetNames(typeof(CollisionLayer)).Length);
-            _systemList = new List<ISystem>();
-            _drawSystemList = new List<IDrawSystem>();
+            _activeSystemList = new List<ISystem>();
+            _activeDrawSystemList = new List<IDrawSystem>();
+
+            _pauseSystemList = new List<ISystem>();
+            _pauseDrawSystemList = new List<IDrawSystem>();
+
             _rand = new Random();
         }
 
-        public void Load()
+        public void Load(SceneManager sceneManager)
         {
+            _sceneManager = sceneManager;
             var inputSystem = new ProcessInputSystem();
 
-            _systemList.Add(inputSystem);
-            _systemList.Add(new ProcessMovableSystem());
-            _systemList.Add(_physics);
-            _systemList.Add(new MatchSystem(this));
+            _activeSystemList.Add(inputSystem);
+            _activeSystemList.Add(new ProcessMovableSystem());
+            _activeSystemList.Add(_physics);
+            _activeSystemList.Add(new MatchSystem(_sceneManager));
 
-            _drawSystemList.Add(new MainSceneDrawSystem());
+            _activeDrawSystemList.Add(new MainSceneDrawSystem());
+
+            var menu = new Menu(new Tuple<string, Action>[] {
+                new Tuple<string, Action>("Resume", ResumeFromPause),
+                new Tuple<string, Action>("Return to main menu", ReturnToMainMenu)
+            });
+
+            _pauseSystemList.Add(new MenuInputSystem(menu));
+
+            _pauseDrawSystemList.Add(new MainSceneDrawSystem());
+            _pauseDrawSystemList.Add(new PauseMenuDrawSystem(menu));
 
             _player1 = EntityManager.NewEntity<PlayerEntity>();
             _player2 = EntityManager.NewEntity<PlayerEntity>();
@@ -64,14 +80,31 @@ namespace ECSImplementation.Scenes
 
         public void Update(GameTime gameTime)
         {
-            foreach (var system in _systemList)
-                system.Update(gameTime);
+            if (MatchState.AskForPaused)
+            {
+                foreach (var system in _pauseSystemList)
+                    system.Update(gameTime);
+            }
+            else
+            {
+                foreach (var system in _activeSystemList)
+                    system.Update(gameTime);
+            }
+            
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            for (var i = 0; i < _drawSystemList.Count; i++)
-                _drawSystemList[i].Draw(gameTime, spriteBatch);
+            if (MatchState.AskForPaused)
+            {
+                for (var i = 0; i < _pauseDrawSystemList.Count; i++)
+                    _pauseDrawSystemList[i].Draw(gameTime, spriteBatch);
+            }
+            else
+            {
+                for (var i = 0; i < _activeDrawSystemList.Count; i++)
+                    _activeDrawSystemList[i].Draw(gameTime, spriteBatch);
+            }
         }
 
         void DoReset(bool isFullReset)
@@ -148,25 +181,45 @@ namespace ECSImplementation.Scenes
                 _physics.NotifyNewEntity(_wallTop);
                 _physics.NotifyNewEntity(_goalLeft);
                 _physics.NotifyNewEntity(_goalRight);
+
+                MatchState.Reset();
             }
 
-            Console.WriteLine($"Match #{GameState.MatchNumber}");
-            Console.WriteLine($"Score {GameState.ScorePlayer1} - {GameState.ScorePlayer2}");
+            Console.WriteLine($"Match #{MatchState.MatchNumber}");
+            Console.WriteLine($"Score {MatchState.ScorePlayer1} - {MatchState.ScorePlayer2}");
+        }
+        public void Unload()
+        {
+            _activeSystemList.Clear();
+            _activeDrawSystemList.Clear();
+            _pauseSystemList.Clear();
+            _pauseDrawSystemList.Clear();
+
+            EntityManager.Reset();
         }
 
-        private Vector2 GetRandomVectorOrientation()
+        Vector2 GetRandomVectorOrientation()
         {
-            var radian = _rand.Next(-45,45) * (2 * Math.PI / 360);
+            var radian = _rand.Next(-45, 45) * (2 * Math.PI / 360);
             var vector = new Vector2((float)Math.Cos(radian), (float)Math.Sin(radian));
             if (_rand.NextDouble() > .5)
                 vector = -vector;
             return vector;
         }
 
-        readonly IList<ISystem> _systemList;
-        readonly IList<IDrawSystem> _drawSystemList;
+        void ResumeFromPause() => MatchState.AskForPaused = false;
+        void ReturnToMainMenu() => _sceneManager.SetNewScene(new TitleScreenScene());
+
+        readonly IList<ISystem> _activeSystemList;
+        readonly IList<IDrawSystem> _activeDrawSystemList;
+
+        readonly IList<ISystem> _pauseSystemList;
+        readonly IList<IDrawSystem> _pauseDrawSystemList;
+
         readonly PhysicSystem _physics;
         readonly Random _rand;
+
+        SceneManager _sceneManager;
 
         PlayerEntity _player1;
         PlayerEntity _player2;

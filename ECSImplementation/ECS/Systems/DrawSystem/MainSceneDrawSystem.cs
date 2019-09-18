@@ -30,7 +30,7 @@ namespace ECSImplementation.ECS.Systems.DrawSystem
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(_mainFont, $"{GameState.ScorePlayer1} {GameState.ScorePlayer2}", _scorePosition, Color.White);
+            spriteBatch.DrawString(_mainFont, $"{MatchState.ScorePlayer1} {MatchState.ScorePlayer2}", _scorePosition, Color.White);
 
             var rectangle = new Rectangle();
             for(var i = 0; i < _entityList.Count; i++)

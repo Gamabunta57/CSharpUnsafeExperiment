@@ -10,13 +10,13 @@ namespace ECSFoundation.MemoryManagement.MemoryAllocators
     
         public MemoryAllocator(uint size, uint alignment)
         {
-            OriginAddress =(byte*)Marshal.AllocHGlobal((int)size);
-            Alignment = alignment;
-            StackPointer = 0;
-            currentIndex = 0;
+            _originAddress =(byte*)Marshal.AllocHGlobal((int)size);
+            _alignment = alignment;
+            _stackPointer = 0;
+            _currentIndex = 0;
         } 
 
-        public void Dispose() => Marshal.FreeHGlobal((IntPtr)OriginAddress);
+        public void Dispose() => Marshal.FreeHGlobal((IntPtr)_originAddress);
 
         public T NewEntity<T>() where T : IEntity, new()
         {
@@ -26,18 +26,24 @@ namespace ECSFoundation.MemoryManagement.MemoryAllocators
             var members = typeof(T).GetFields(BindingFlags.Instance | BindingFlags.NonPublic); // Get all the raw pointers
             foreach (var member in members)
             {
-                member.SetValue(boxed, (IntPtr)(OriginAddress + StackPointer));
-                StackPointer += Alignment;
+                member.SetValue(boxed, (IntPtr)(_originAddress + _stackPointer));
+                _stackPointer += _alignment;
             }
 
-            boxed.BaseEntity.Id = currentIndex++;
+            boxed.BaseEntity.Id = _currentIndex++;
             return (T)boxed;
         }
 
-        readonly uint Alignment;
-        readonly byte* OriginAddress;
+        public void ResetStack()
+        {
+            _currentIndex = 0;
+            _stackPointer = 0;
+        }
 
-        uint StackPointer;
-        int currentIndex;
+        readonly uint _alignment;
+        readonly byte* _originAddress;
+
+        uint _stackPointer;
+        int _currentIndex;
     }
 }

@@ -35,12 +35,12 @@ namespace ECSImplementation.ECS.Systems.Subsytem
         public static void OnBallReachGoalPlayer1(ICollidable ball, ICollidable goal, Vector2 penetration)
         {
             Console.WriteLine("Player 1 win the match!!");
-            GameState.Player1Scored = true;
+            MatchState.Player1Scored = true;
         }
         public static void OnBallReachGoalPlayer2(ICollidable ball, ICollidable goal, Vector2 penetration)
         {
             Console.WriteLine("Player 2 win the match!!");
-            GameState.Player2Scored = true;
+            MatchState.Player2Scored = true;
         }
 
         public static void OnBallTouchWall(ICollidable ball, ICollidable wall, Vector2 penetration)

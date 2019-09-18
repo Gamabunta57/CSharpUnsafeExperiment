@@ -120,8 +120,8 @@ namespace ECSImplementation.Scenes
                 _physics.NotifyNewEntity(_wallRight);
             }
 
-            Console.WriteLine($"Match #{GameState.MatchNumber}");
-            Console.WriteLine($"Score {GameState.ScorePlayer1} - {GameState.ScorePlayer2}");
+            Console.WriteLine($"Match #{MatchState.MatchNumber}");
+            Console.WriteLine($"Score {MatchState.ScorePlayer1} - {MatchState.ScorePlayer2}");
         }
 
         private Vector2 GetRandomVectorOrientation()

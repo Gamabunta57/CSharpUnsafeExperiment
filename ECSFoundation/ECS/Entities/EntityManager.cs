@@ -8,7 +8,6 @@ namespace ECSFoundation.ECS.Entities
         public static event NewEntityCreated OnNewEntityCreated;
         public delegate void NewEntityCreated(IEntity entity);
 
-
         public static void Init(MemoryAllocator memoryManager) => memory = memoryManager;
 
         public static T NewEntity<T>() where T : IEntity, new()
@@ -19,6 +18,7 @@ namespace ECSFoundation.ECS.Entities
 
             return entity;
         }
+        public static void Reset() => memory.ResetStack();
 
         static MemoryAllocator memory;
     }

@@ -1,17 +1,18 @@
 ﻿using System;
 using ECSFoundation.ECS.Entities;
 using ECSFoundation.MemoryManagement.MemoryAllocators;
+using ECSImplementation.Global;
 using ECSImplementation.Scenes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+
 namespace Pong
 {
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Scene scene;
+        SceneManager sceneManager;
         RenderTarget2D mainRender;
         MemoryAllocator allocator;
 
@@ -42,7 +43,7 @@ namespace Pong
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            scene = new Scene();
+            sceneManager = new SceneManager(new TitleScreenScene());
             allocator = MemoryBuilder.BuildMemoryAllocator();
             EntityManager.Init(allocator);
 
@@ -59,25 +60,27 @@ namespace Pong
             ECSImplementation.Global.Texture.MainTexture.SetData(new Color[] { Color.White });
             ECSImplementation.Global.Texture.MainFont = Content.Load<SpriteFont>("File");
 
-            scene.Load();
+            sceneManager.Load();
 
             // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (MatchState.AskForExit)
                 Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //    Exit();
 
             // TODO: Add your update logic here
-            scene.Update(gameTime);
+            sceneManager.Update(gameTime);
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.SetRenderTarget(mainRender);
-            scene.Draw(gameTime, spriteBatch);
+            sceneManager.Draw(gameTime, spriteBatch);
 
             GraphicsDevice.SetRenderTarget(null);
             spriteBatch.Begin();
