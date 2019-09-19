@@ -2,7 +2,6 @@
 using ECSFoundation.ECS.Systems;
 using ECSImplementation.ECS.Systems;
 using ECSImplementation.ECS.Systems.DrawSystem;
-using ECSImplementation.Global;
 using ECSImplementation.Menus;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -26,7 +25,7 @@ namespace ECSImplementation.Scenes
             var menu = new Menu(new Tuple<string, Action>[] {
                 new Tuple<string, Action>("Play again", PlayAgainMenuItem),
                 new Tuple<string, Action>("Return to main menu", ReturnToMainMenu)
-            });
+            }, new Vector2(640 / 2, 480 / 2));
 
             _activeSystemList.Add(new MenuInputSystem(menu));
 

@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace ECSImplementation.Menus
 {
@@ -8,6 +7,7 @@ namespace ECSImplementation.Menus
     {
         uint CurrentSelected { get; }
         Tuple<string, Action>[] Items { get; }
+        Vector2 Position { get; }
 
         void SelectPriorItem();
         void SelectNextItem();

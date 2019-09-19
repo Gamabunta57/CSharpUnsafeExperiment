@@ -1,9 +1,6 @@
 ﻿using ECSFoundation.ECS.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ECSImplementation.ECS.Systems.DrawSystem
 {
@@ -25,7 +22,7 @@ namespace ECSImplementation.ECS.Systems.DrawSystem
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(_font, _winSentence, _position, Color.White);
+            spriteBatch.DrawString(_font, _winSentence, _position, Color.MediumPurple);
             spriteBatch.End();
         }
 

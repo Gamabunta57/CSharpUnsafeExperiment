@@ -16,19 +16,21 @@ namespace ECSImplementation.ECS.Systems.DrawSystem
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            var refPosition = new Vector2(0, 200);
+            var refPosition = _menu.Position;
             var position = refPosition;
             var selection = _menu.CurrentSelected;
+
             spriteBatch.Begin();
             spriteBatch.Draw(_bgTexture, new Rectangle(0, 0, 640, 480), new Color(0,0,0,(int)(255*.8)));
+
             for(var i = 0; i < _menu.Items.Length; i++)
             {
                 ref var item = ref _menu.Items[i];
                 var size = _font.MeasureString(item.Item1);
-                position.X = (640 - size.X) / 2;
+
                 position.Y = refPosition.Y + (size.Y * i);
 
-                spriteBatch.DrawString(_font, item.Item1, position, selection == i ? Color.Yellow : Color.White);
+                spriteBatch.DrawString(_font, item.Item1, position, selection == i ? Color.Yellow : Color.White, 0, size / 2, .6f, SpriteEffects.None, 0);
             }
             spriteBatch.End();
         }

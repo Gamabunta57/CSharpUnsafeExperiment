@@ -43,7 +43,7 @@ namespace ECSImplementation.Scenes
             var menu = new Menu(new Tuple<string, Action>[] {
                 new Tuple<string, Action>("Resume", ResumeFromPause),
                 new Tuple<string, Action>("Return to main menu", ReturnToMainMenu)
-            });
+            }, new Vector2(640 / 2, 480 / 2));
 
             _pauseSystemList.Add(new MenuInputSystem(menu));
 
