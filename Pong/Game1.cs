@@ -43,7 +43,7 @@ namespace Pong
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            sceneManager = new SceneManager(new TitleScreenScene());
+            sceneManager = new SceneManager(new PressStartScene());
             allocator = MemoryBuilder.BuildMemoryAllocator();
             EntityManager.Init(allocator);
 
