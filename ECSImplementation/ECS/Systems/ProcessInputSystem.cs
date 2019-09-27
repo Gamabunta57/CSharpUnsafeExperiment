@@ -19,10 +19,21 @@ namespace ECSImplementation.ECS.Systems
         public void Update(GameTime gameTime)
         {
             var state = Keyboard.GetState();
-            _player1.Heading.Value.Y = state.IsKeyDown(Keys.Z) ? -1 : state.IsKeyDown(Keys.S) ? 1 : 0;
-            _player2.Heading.Value.Y = state.IsKeyDown(Keys.Up) ? -1 : state.IsKeyDown(Keys.Down) ? 1 : 0;
+            var gamePadState = GamePad.GetState(ControllerState.Player1Index);
 
-            if (state.IsKeyDown(Keys.Escape))
+            _player1.Heading.Value.Y = state.IsKeyDown(Keys.Z) || gamePadState.IsButtonDown(Buttons.LeftThumbstickUp) ?
+                                       -1 : 
+                                       state.IsKeyDown(Keys.S) || gamePadState.IsButtonDown(Buttons.LeftThumbstickDown) ? 
+                                       1 :
+                                       0;
+
+            _player2.Heading.Value.Y = state.IsKeyDown(Keys.Up) || gamePadState.IsButtonDown(Buttons.RightThumbstickUp) ?
+                                       -1 : 
+                                       state.IsKeyDown(Keys.Down) || gamePadState.IsButtonDown(Buttons.RightThumbstickDown)  ? 
+                                       1 :
+                                       0;
+
+            if (state.IsKeyDown(Keys.Escape)  || gamePadState.IsButtonDown(Buttons.Start))
                 MatchState.AskForPaused = true;
         }
     }
